@@ -1,10 +1,10 @@
-package com.example.heroesofiu3.domain.gameField
+package com.example.heroesofiu3.domain.entities.gameField
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.heroesofiu3.domain.Units.Unit
-import com.example.heroesofiu3.domain.buildings.Castle
+import com.example.heroesofiu3.domain.entities.Units.Unit
+import com.example.heroesofiu3.domain.entities.buildings.Castle
 
 class Cell(
     val x: Int,
@@ -25,5 +25,8 @@ class Cell(
             unit!!.isBoosted = true
         }
     }
+
+
+
 
 }

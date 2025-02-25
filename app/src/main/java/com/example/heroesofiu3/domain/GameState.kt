@@ -1,20 +1,21 @@
-package com.example.heroesofiu3.domain.entities
+package com.example.heroesofiu3.domain
 
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.heroesofiu3.domain.gameField.Cell
-import com.example.heroesofiu3.domain.gameField.GameResult
-import com.example.heroesofiu3.domain.gameField.Terrain
+import com.example.heroesofiu3.domain.entities.gameField.Cell
+import com.example.heroesofiu3.domain.entities.gameField.GameField
+import com.example.heroesofiu3.domain.entities.gameField.GameResult
+import com.example.heroesofiu3.domain.entities.gameField.Terrain
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-class GameState(val width: Int, val height: Int) {
+class GameState(width: Int, height: Int) {
     val gameField = GameField(width, height)
 
     private var _selectedCell by mutableStateOf<Cell?>(null)
@@ -47,7 +48,7 @@ class GameState(val width: Int, val height: Int) {
                     _availableMoves.value = emptyList()
                     return
                 }
-                else if (cell.unit?.isPlayer == false && findDistance(_selectedCell!!, cell) == 1){
+                else if (canAttack(_selectedCell!!, cell)){
                     if (selectedUnit?.hasAttacked == true) {
                         Toast.makeText(context, "This unit has already attacked this turn.", Toast.LENGTH_SHORT).show()
                         return
@@ -293,6 +294,12 @@ class GameState(val width: Int, val height: Int) {
         return distance <= maxDistance
     }
 
+    private fun canAttack(from: Cell, to: Cell): Boolean {
+        val distance = findDistance(from, to)
+        val attackDistance = from.unit?.attackDistance ?: 0
+        return distance <= attackDistance && to.unit?.isPlayer != from.unit?.isPlayer
+    }
+
     private fun resetUnitActions() {
         gameField.getCellList().forEach { cell ->
             cell.unit?.hasMoved = false
@@ -305,13 +312,16 @@ class GameState(val width: Int, val height: Int) {
         val botCastle = findBotCastle()
 
         // Проверка захвата замков
+
+        // юнит бота на замке игрока
         if (playerCastle?.unit?.isPlayer == false) {
             return GameResult.BotWins // Бот захватил замок игрока
         }
+
+        // юнит игрока в замке бота
         if (botCastle?.unit?.isPlayer == true) {
             return GameResult.PlayerWins // Игрок захватил замок бота
         }
-
         // Проверка наличия юнитов и героев
         val playerUnits = gameField.getCellList().filter { it.unit?.isPlayer == true }
         val botUnits = gameField.getCellList().filter { it.unit?.isPlayer == false }
@@ -325,6 +335,5 @@ class GameState(val width: Int, val height: Int) {
 
         return GameResult.Continue // Игра продолжается
     }
-
 
 }

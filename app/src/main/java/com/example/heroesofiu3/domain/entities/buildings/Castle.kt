@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.domain.buildings
+package com.example.heroesofiu3.domain.entities.buildings
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

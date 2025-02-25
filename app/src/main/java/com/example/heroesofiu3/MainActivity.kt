@@ -1,5 +1,6 @@
 package com.example.heroesofiu3
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,16 +39,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.heroesofiu3.domain.Units.Hero
-import com.example.heroesofiu3.domain.Units.Knight
-import com.example.heroesofiu3.domain.buildings.Barracks
-import com.example.heroesofiu3.domain.buildings.Castle
-import com.example.heroesofiu3.domain.buildings.Stable
-import com.example.heroesofiu3.domain.buildings.Tavern
-import com.example.heroesofiu3.domain.entities.GameField
-import com.example.heroesofiu3.domain.entities.GameState
-import com.example.heroesofiu3.domain.gameField.Cell
-import com.example.heroesofiu3.domain.gameField.Terrain
+import com.example.heroesofiu3.domain.GameState
+import com.example.heroesofiu3.domain.entities.Units.Archer
+import com.example.heroesofiu3.domain.entities.Units.Hero
+import com.example.heroesofiu3.domain.entities.Units.Knight
+import com.example.heroesofiu3.domain.entities.buildings.Barracks
+import com.example.heroesofiu3.domain.entities.buildings.Castle
+import com.example.heroesofiu3.domain.entities.buildings.Stable
+import com.example.heroesofiu3.domain.entities.buildings.Tavern
+import com.example.heroesofiu3.domain.entities.gameField.Cell
+import com.example.heroesofiu3.domain.entities.gameField.GameField
+import com.example.heroesofiu3.domain.entities.gameField.Terrain
 import com.example.heroesofiu3.presentation.screens.GameOverScreen
 import com.example.heroesofiu3.ui.theme.HeroesOfIU3Theme
 
@@ -67,14 +69,15 @@ private fun initializeField(field: GameField){
     // Игрок:
     field.getCell(1, 0)?.unit = Hero("Hero", true)
     field.getCell(1, 1)?.unit = Knight("Knight", true)
+    field.getCell(4, 4)?.unit = Archer("Archer", true)
     field.getCell(3, 1)?.unit = Knight("Mega Knight", true, health = 1000, strength = 1000)
-    field.getCell(0, 0)?.castle = Castle("Blue", true)
+    field.getCell(1, 1)?.castle = Castle("Blue", true)
 
     // Бот:
     field.getCell(9, 9)?.unit = Hero("Hero", false)
     field.getCell(8, 9)?.unit = Knight("Knight", false)
-    field.getCell(9, 9)?.castle = Castle("Red", false)
-    field.getCell(9, 9)?.castle!!.addBuiding(Barracks())
+    field.getCell(8, 8)?.castle = Castle("Red", false)
+    field.getCell(8, 8)?.castle!!.addBuiding(Barracks())
 }
 
 @Preview(showSystemUi = true)
@@ -165,6 +168,7 @@ fun CellInfo(selectedCell : Cell){
     }
 }
 
+@SuppressLint("ResourceAsColor")
 @Composable
 fun CellView(
     cell: Cell,
@@ -172,7 +176,6 @@ fun CellView(
     onClick: () -> Unit,
     isAvailable: Boolean
 ) {
-
     val terrain = cell.terrain
     Box(
         modifier = Modifier
@@ -187,10 +190,28 @@ fun CellView(
     ) {
         // Отображение содержимого ячейки
         if (cell.unit != null) {
-            Text(
-                text = cell.unit!!.name,
-                color = if (cell.unit!!.isPlayer) Color.Black else Color.Red
-            )
+            if (cell.unit is Knight){
+                Icon(
+                    painterResource(R.drawable.knight),
+                    "friendly castle",
+                    tint = if (cell.unit!!.isPlayer) colorResource(id = R.color.teal_700) else colorResource(id = R.color.maroon)
+                )
+            }
+            if (cell.unit is Hero){
+                Icon(
+                    painterResource(R.drawable.hero),
+                    "friendly castle",
+                    tint = if (cell.unit!!.isPlayer) colorResource(id = R.color.teal_700) else colorResource(id = R.color.maroon)
+                )
+            }
+            if (cell.unit is Archer){
+                Icon(
+                    painterResource(R.drawable.archer),
+                    "friendly castle",
+                    tint = if (cell.unit!!.isPlayer) colorResource(id = R.color.teal_700) else colorResource(id = R.color.maroon)
+                )
+            }
+
         }
 
         if (cell.castle != null) {
@@ -207,8 +228,9 @@ fun CellView(
                     tint = colorResource(R.color.maroon)
                 )
             }
-
         }
+
+
     }
 }
 
@@ -253,7 +275,7 @@ fun UsableBuildings(selectedCell: Cell) {
                 modifier = Modifier.fillMaxWidth(0.5f),
                 onClick = { it.executeEffect(selectedCell) },
             ) {
-                Text("Use ${it.name}", textAlign = TextAlign.Center)
+                Text("Use ${it.name} (${it.cost})", textAlign = TextAlign.Center)
             }
         }
     }
@@ -270,3 +292,5 @@ fun Modifier.cellBackground(terrain: Terrain): Modifier {
         }
     )
 }
+
+

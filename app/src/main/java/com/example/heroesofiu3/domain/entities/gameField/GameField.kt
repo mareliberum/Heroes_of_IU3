@@ -1,7 +1,4 @@
-package com.example.heroesofiu3.domain.entities
-
-import com.example.heroesofiu3.domain.gameField.Cell
-import com.example.heroesofiu3.domain.gameField.Terrain
+package com.example.heroesofiu3.domain.entities.gameField
 
 class GameField(val width: Int, val height: Int) {
 

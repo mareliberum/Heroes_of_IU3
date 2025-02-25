@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.domain.Units
+package com.example.heroesofiu3.domain.entities.Units
 
 class Hero(
     name: String,
