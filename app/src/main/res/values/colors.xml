@@ -10,9 +10,12 @@
     <color name="darkSeeGreen">#8FBC8F</color>
     <color name="forestGreen">#228B22</color>
     <color name="tomato">#FF6347</color>
-    v<color name="maroon">#800000</color>
+    <color name="maroon">#800000</color>
     <color name="khaki">#F0E68C</color>
     <color name="gray">#A9A9A9</color>
+    <color name="burlyWood">#DEB887</color>
+    <color name="ic_launcher_background">#00000000</color>
+
 
 
 

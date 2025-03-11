@@ -27,4 +27,14 @@ class GameField(val width: Int, val height: Int) {
         }
         return cellList
     }
+
+    fun reset() {
+        for (row in cells) {
+            for (cell in row) {
+                cell.unit = null
+                cell.castle = null
+
+            }
+        }
+    }
 }

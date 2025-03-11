@@ -6,11 +6,13 @@ import androidx.compose.runtime.setValue
 import com.example.heroesofiu3.domain.entities.Units.Unit
 import com.example.heroesofiu3.domain.entities.buildings.Castle
 
+
 class Cell(
     val x: Int,
     val y: Int,
-    val terrain: Terrain = Terrain.ROAD
+    terrain: Terrain = Terrain.ROAD,
 ) {
+    var terrain by mutableStateOf(terrain)
     var unit by mutableStateOf<Unit?>(null)
     var castle by mutableStateOf<Castle?>(null)
 
@@ -18,15 +20,4 @@ class Cell(
         castle?.spendMoney(400)
         unit = unitToBuy
     }
-
-    fun boostUnit() {
-        if (unit != null && unit?.isBoosted == false) {
-            unit!!.maxDistance += 1
-            unit!!.isBoosted = true
-        }
-    }
-
-
-
-
 }

@@ -5,6 +5,7 @@ import com.example.heroesofiu3.domain.entities.gameField.Cell
 
 class Barracks : Building("Barracks", 300, 400) {
 
+
     override fun executeEffect(selectedCell: Cell) {
         val castle = selectedCell.castle!!
         val gold = castle.gold

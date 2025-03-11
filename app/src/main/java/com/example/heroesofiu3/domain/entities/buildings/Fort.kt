@@ -6,6 +6,7 @@ class Fort : Building("Fort", 1000) {
 
     override fun executeEffect(selectedCell: Cell) {
 
-        TODO("Not yet implemented")
+
     }
+
 }

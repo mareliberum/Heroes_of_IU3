@@ -1,10 +1,13 @@
-package com.example.heroesofiu3.domain
+package com.example.heroesofiu3.presentation
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.heroesofiu3.domain.entities.Units.Hero
+import com.example.heroesofiu3.domain.entities.buildings.Fort
 import com.example.heroesofiu3.domain.entities.gameField.Cell
 import com.example.heroesofiu3.domain.entities.gameField.GameField
 import com.example.heroesofiu3.domain.entities.gameField.GameResult
@@ -27,6 +30,14 @@ class GameState(width: Int, height: Int) {
     private var _isGameOver by mutableStateOf("")
     val isGameOver: String get() = _isGameOver
 
+    fun resetGame() {
+        gameField.reset() // Сброс игрового поля
+        _selectedCell = null
+        _availableMoves.value = emptyList()
+        _isGameOver = ""
+    }
+
+    // Обработка действий игрока
     fun selectCell(cell: Cell, context: Context) {
 
         when (_selectedCell) {
@@ -43,25 +54,37 @@ class GameState(width: Int, height: Int) {
             else -> {
                 val selectedUnit = _selectedCell!!.unit
 
+                //  Проверка, является ли выбранный юнит союзным
                 if (selectedUnit?.isPlayer == false) {
                     _selectedCell = null
                     _availableMoves.value = emptyList()
                     return
                 }
-                else if (canAttack(_selectedCell!!, cell)){
+                if (canAttack(_selectedCell!!, cell)) {
                     if (selectedUnit?.hasAttacked == true) {
-                        Toast.makeText(context, "This unit has already attacked this turn.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context, "This unit has already attacked this turn.", Toast.LENGTH_SHORT
+                        ).show()
                         return
                     }
-                    attackUnit(_selectedCell!!, cell, context)
+
+                    when {
+                        cell.unit != null -> attackUnit(_selectedCell!!, cell, context)
+                        cell.castle != null -> attackCastle(_selectedCell!!, cell, context)
+                    }
+
                     moveUnit(_selectedCell!!, cell, getMaxDistanceFromSelectedCell())
                     _selectedCell = null
                     _availableMoves.value = emptyList()
                     return
                 }
+
                 if (selectedUnit?.hasMoved == true) {
-                    Toast.makeText(context, "This unit has already moved this turn.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context, "This unit has already moved this turn.", Toast.LENGTH_SHORT
+                    ).show()
                 }
+
                 moveUnit(_selectedCell!!, cell, getMaxDistanceFromSelectedCell())
                 _selectedCell = null
                 _availableMoves.value = emptyList()
@@ -80,10 +103,11 @@ class GameState(width: Int, height: Int) {
         val playerUnits = gameField.getCellList().filter { it.unit != null && it.unit!!.isPlayer }
 
         val botCastleCell = findBotCastle()
-        //Покупка юнитов ботом
+
+        // Покупка юнитов ботом
         botCastleCell?.castle?.buildings?.get(0)?.executeEffect(botCastleCell)
 
-        //  Копия, чтобы избежать изменений во время итерации
+        // Копия, чтобы избежать изменений во время итерации
         val botUnitsCopy = botUnits.toList()
 
         botUnitsCopy.forEach { botCell ->
@@ -94,11 +118,12 @@ class GameState(width: Int, height: Int) {
             // Поиск ближайшей соседней с юнитом клетки из которой можно атаковать
             val nearestCell: Cell? = findNearestFreeCellNearPlayerUnit(botCell, targetCell)
 
-            //  Перемещение и проведение атаки
-            if (targetCell != null && nearestCell != null && canMove(
-                    botCell,
-                    nearestCell,
-                    botUnitMovementDistance
+            //  Перемещение и проведение атаки (не замок игрока с героем, фортом и хп > 0 и не пустая клетка и может туда придти)
+            if (!(targetCell?.castle?.isPlayer == true && targetCell.unit is Hero && targetCell.castle?.health!! > 0)
+                && targetCell != null
+                && nearestCell != null
+                && canMove(
+                    botCell, nearestCell, botUnitMovementDistance
                 )
             ) {
                 moveUnit(botCell, nearestCell, botUnitMovementDistance)
@@ -106,7 +131,8 @@ class GameState(width: Int, height: Int) {
 
             } else {
                 // Если атаковать некого, двигаемся в сторону замка игрока
-                moveTowardsPlayerCastle(botCell)
+                Log.d("test", "bot movung towards player castle")
+                moveTowardsPlayerCastle(botCell, context)
             }
         }
         when (checkGameOver()) {
@@ -120,13 +146,15 @@ class GameState(width: Int, height: Int) {
         _isGameOver = message
     }
 
-    private fun moveTowardsPlayerCastle(botCell: Cell) {
+    private fun moveTowardsPlayerCastle(botCell: Cell, context: Context) {
         val playerCastle = findPlayerCastle() ?: return
         val botUnitMovementDistance = getMaxDistanceForBot(botCell)
         var availableMoves = getAvailableForBotMoves(botCell, botUnitMovementDistance)
+        val nearestCellToCastle = findNearestFreeCellNearPlayerUnit(botCell, playerCastle) ?: return
 
-        if (canMove(botCell, playerCastle, botUnitMovementDistance)) {
-            moveUnit(botCell, playerCastle, botUnitMovementDistance)
+        if (canMove(botCell, nearestCellToCastle, botUnitMovementDistance)) {
+            moveUnit(botCell, nearestCellToCastle, botUnitMovementDistance)
+            attackCastle(botCell, playerCastle, context)
 
         } else {
             availableMoves = availableMoves.filter { it.unit == null }
@@ -138,8 +166,6 @@ class GameState(width: Int, height: Int) {
                 moveUnit(botCell, targetCell, botUnitMovementDistance)
             }
         }
-
-
     }
 
     private fun findPlayerCastle(): Cell? {
@@ -169,11 +195,10 @@ class GameState(width: Int, height: Int) {
 
             if (defender.health <= 0) {
                 to.unit = null // Юнит игрока уничтожен
-                if(attacker.isPlayer){
-                    findPlayerCastle()?.castle?.addGold(1000)
-                }
-                else{
-                    findBotCastle()?.castle?.addGold(1000)
+                if (attacker.isPlayer) {
+                    findPlayerCastle()?.castle?.addGold(500)
+                } else {
+                    findBotCastle()?.castle?.addGold(500)
                 }
             }
         }
@@ -274,23 +299,32 @@ class GameState(width: Int, height: Int) {
     private fun canMove(from: Cell, to: Cell, maxDistance: Int): Boolean {
         var distance = findDistance(from, to)
 
-        if(from.unit?.isPlayer == true){
+        if (from.unit?.isPlayer == true) {
+            if (to.terrain == Terrain.UNREACHABLE) return false
             distance += when (to.terrain) {
                 Terrain.ROAD -> if (from.unit != null) -1 else 0// бонус на дороге
                 Terrain.FRIENDLY -> 1 // Штраф на дружественной территории
-                Terrain.ENEMY -> 3 // Штраф на вражеской территории
+                Terrain.ENEMY -> 2 // Штраф на вражеской территории
                 Terrain.OBSTACLE -> 3 // Препятствие
+                Terrain.WALL -> 2
+                Terrain.GATE -> 1
+                else -> 0
             }
-        }else{
+        }
+        //Else is for bot moves
+        else {
+            if(to.terrain == Terrain.UNREACHABLE) return false
             distance += when (to.terrain) {
                 Terrain.ROAD -> if (from.unit != null) -1 else 0 // бонус на дороге
-                Terrain.FRIENDLY -> 3 // Штраф на дружественной территории
-                Terrain.ENEMY -> 1 // Штраф на вражеской территории
+                Terrain.FRIENDLY -> 2 // Штраф на нашей территории
+                Terrain.ENEMY -> 1 // Штраф на его территории
                 Terrain.OBSTACLE -> 3 // Препятствие
+                Terrain.WALL -> 2
+                Terrain.GATE -> 1
+                else -> 0
             }
         }
 
-//        distance += terrainPenalty
         return distance <= maxDistance
     }
 
@@ -332,8 +366,79 @@ class GameState(width: Int, height: Int) {
         if (botUnits.isEmpty()) {
             return GameResult.PlayerWins // У бота не осталось юнитов
         }
-
         return GameResult.Continue // Игра продолжается
+    }
+
+    private fun attackCastle(unitCell: Cell, castleCell: Cell, context: Context) {
+        Log.d("Test", "Castle Attacked")
+        val castle = castleCell.castle ?: return
+        val attacker = unitCell.unit ?: return
+        if (attacker.hasAttacked) return
+
+        // Если форта нет или если замок игрока и там нет героя - просто идем в замок
+        if (!castle.buildings.any { it is Fort } || (castle.isPlayer && castleCell.unit !is Hero)) {
+            Log.d("Test", "no fort, move into castle")
+            moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
+            return
+        }
+        // Если  есть форт и осада еще не начата, то начать осаду
+        if (!castle.isUnderSiege && castle.buildings.any { it is Fort }) {
+            Log.d("Test", "Siege started")
+            startSiege(castleCell)
+        }
+
+        damageCastle(unitCell, castleCell, context)
+    }
+
+    private fun damageCastle(unitCell: Cell, castleCell: Cell, context: Context) {
+        val attacker = unitCell.unit ?: return
+        val castle = castleCell.castle ?: return
+        if (attacker.hasAttacked) return
+
+        if (attacker.isPlayer != castle.isPlayer) {
+            if (unitCell.terrain == Terrain.GATE) {
+                castle.health -= attacker.strength
+                attacker.hasAttacked = true
+                Toast.makeText(
+                    context,
+                    "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            if (unitCell.terrain == Terrain.WALL) {
+                castle.health -= attacker.strength
+                attacker.health -= castle.strength
+                attacker.hasAttacked = true
+                Toast.makeText(
+                    context,
+                    "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+        if (castle.health <= 0) {
+            endSiege(castleCell)
+            moveUnit(unitCell, castleCell, attacker.maxDistance)
+        }
+    }
+
+    private fun startSiege(castleCell: Cell) {
+        val castle = castleCell.castle ?: return
+        castle.isUnderSiege = true
+
+        //Building walls and gates
+        val neigbors = getNeighbors(castleCell)
+        neigbors.forEach { it.terrain = Terrain.WALL }
+        neigbors.forEach { if (it.x == it.y) it.terrain = Terrain.GATE }
+
+        castleCell.terrain = Terrain.UNREACHABLE    //Makes castle unreachable until siege is over
+    }
+
+    private fun endSiege(castleCell: Cell) {
+        val castle = castleCell.castle ?: return
+        castle.isUnderSiege = false
+
+        castleCell.terrain = Terrain.ROAD   //Makes castle reachable when siege is over
     }
 
 }

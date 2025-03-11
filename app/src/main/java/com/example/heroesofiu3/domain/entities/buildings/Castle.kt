@@ -9,7 +9,9 @@ import androidx.compose.runtime.setValue
 class Castle(
     val name: String,
     val isPlayer: Boolean,
-
+    var isUnderSiege: Boolean = false,
+    var health : Int = 250,
+    var strength: Int = 40,
 ) {
     private val _buildings = mutableStateListOf<Building>()
     val buildings : List<Building> get() = _buildings
@@ -42,6 +44,6 @@ class Castle(
     }
 
     override fun toString(): String {
-        return "[Castle $name]"
+        return "[Castle $name], gold: $gold, health: $health"
     }
 }
