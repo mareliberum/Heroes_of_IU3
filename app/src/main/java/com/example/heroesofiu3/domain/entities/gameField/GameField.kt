@@ -33,7 +33,12 @@ class GameField(val width: Int, val height: Int) {
             for (cell in row) {
                 cell.unit = null
                 cell.castle = null
-
+                val x = cell.x
+                val y = cell.y
+                cell.terrain = if (x == y) Terrain.ROAD
+                else if (x <= 4 && y <= 4) Terrain.FRIENDLY
+                else if (x >= 5 && y >= 5) Terrain.ENEMY
+                else Terrain.OBSTACLE
             }
         }
     }
