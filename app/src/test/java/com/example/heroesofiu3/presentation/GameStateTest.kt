@@ -44,7 +44,7 @@ class GameStateTest {
     @Test
     fun `resetGame should reset gameState`() {
         val gameState = GameState(10, 10)
-        val cell = Cell(1, 1)
+        val cell = gameState.gameField.getCell(1,1)!!
         cell.unit = Knight("Knight", true)
         gameState.selectCell(cell, mock(Context::class.java))
         gameState.resetGame()
