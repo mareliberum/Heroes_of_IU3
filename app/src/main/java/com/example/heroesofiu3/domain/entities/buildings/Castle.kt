@@ -16,7 +16,7 @@ class Castle(
     private val _buildings = mutableStateListOf<Building>()
     val buildings : List<Building> get() = _buildings
 
-    private var _gold by mutableIntStateOf(400)
+    private var _gold by mutableIntStateOf(0)
     val gold : Int get() = _gold
 
 

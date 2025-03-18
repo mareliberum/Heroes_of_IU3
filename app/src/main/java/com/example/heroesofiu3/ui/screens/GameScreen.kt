@@ -37,6 +37,7 @@ fun GameScreen() {
     val availableMoves by gameState.availableMoves.collectAsState()
     val isGameOver = gameState.isGameOver
 
+
     // Состояние для отображения GameOverScreen
     var showGameOverScreen by remember { mutableStateOf(false) }
 

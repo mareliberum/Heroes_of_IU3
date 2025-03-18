@@ -1,7 +1,6 @@
 package com.example.heroesofiu3.presentation
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,13 +21,16 @@ class GameState(width: Int, height: Int) {
     val gameField = GameField(width, height)
 
     private var _selectedCell by mutableStateOf<Cell?>(null)
-    val selectedCell: Cell? get() = _selectedCell
+    val selectedCell: Cell?
+        get() = _selectedCell
 
     private val _availableMoves = MutableStateFlow<List<Cell>>(emptyList())
     val availableMoves: StateFlow<List<Cell>> = _availableMoves
 
     private var _isGameOver by mutableStateOf("")
-    val isGameOver: String get() = _isGameOver
+    val isGameOver: String
+        get() = _isGameOver
+
 
     fun resetGame() {
         gameField.reset() // Сброс игрового поля
@@ -71,9 +73,8 @@ class GameState(width: Int, height: Int) {
                     when {
                         cell.unit != null -> attackUnit(_selectedCell!!, cell, context)
                         cell.castle != null -> attackCastle(_selectedCell!!, cell, context)
+                        else ->moveUnit(_selectedCell!!, cell, getMaxDistanceFromSelectedCell())
                     }
-
-                    moveUnit(_selectedCell!!, cell, getMaxDistanceFromSelectedCell())
                     _selectedCell = null
                     _availableMoves.value = emptyList()
                     return
@@ -118,8 +119,8 @@ class GameState(width: Int, height: Int) {
             // Поиск ближайшей соседней с юнитом клетки из которой можно атаковать
             val nearestCell: Cell? = findNearestFreeCellNearPlayerUnit(botCell, targetCell)
 
-            //  Перемещение и проведение атаки (не замок игрока с героем, фортом и хп > 0 и не пустая клетка и может туда придти)
-            if (!(targetCell?.castle?.isPlayer == true && targetCell.unit is Hero && targetCell.castle?.health!! > 0)
+            //  Перемещение и проведение атаки (не замок игрока с героем, фортом и хп > 0 и не пустая клетка и может туда прийти)
+            if (!(targetCell?.castle?.isPlayer == true && targetCell.unit is Hero && targetCell.castle?.health!! > 0 && targetCell.castle?.buildings?.any{it is Fort} == true)
                 && targetCell != null
                 && nearestCell != null
                 && canMove(
@@ -131,7 +132,6 @@ class GameState(width: Int, height: Int) {
 
             } else {
                 // Если атаковать некого, двигаемся в сторону замка игрока
-                Log.d("test", "bot movung towards player castle")
                 moveTowardsPlayerCastle(botCell, context)
             }
         }
@@ -142,7 +142,10 @@ class GameState(width: Int, height: Int) {
     }
 
     private fun showGameOver(context: Context, message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        try {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+        catch (_ : Exception){}
         _isGameOver = message
     }
 
@@ -186,12 +189,13 @@ class GameState(width: Int, height: Int) {
         if (attacker.isPlayer != defender.isPlayer) {
             defender.health -= attacker.strength
             attacker.hasAttacked = true
-
-            Toast.makeText(
-                context,
-                "${defender.name} took ${attacker.strength} of damage. ${defender.name} health is ${defender.health}",
-                Toast.LENGTH_LONG
-            ).show()
+            try {
+                Toast.makeText(
+                    context,
+                    "${defender.name} took ${attacker.strength} of damage. ${defender.name} health is ${defender.health}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }catch (_ : Exception){ } // моковый контекст может вызвать ошибку в тосте при тесте
 
             if (defender.health <= 0) {
                 to.unit = null // Юнит игрока уничтожен
@@ -296,7 +300,7 @@ class GameState(width: Int, height: Int) {
         return maxDistance
     }
 
-    private fun canMove(from: Cell, to: Cell, maxDistance: Int): Boolean {
+    internal fun canMove(from: Cell, to: Cell, maxDistance: Int): Boolean {
         var distance = findDistance(from, to)
 
         if (from.unit?.isPlayer == true) {
@@ -311,6 +315,7 @@ class GameState(width: Int, height: Int) {
                 else -> 0
             }
         }
+
         //Else is for bot moves
         else {
             if(to.terrain == Terrain.UNREACHABLE) return false
@@ -341,7 +346,7 @@ class GameState(width: Int, height: Int) {
         }
     }
 
-    private fun checkGameOver(): GameResult {
+    internal fun checkGameOver(): GameResult {
         val playerCastle = findPlayerCastle()
         val botCastle = findBotCastle()
 
@@ -370,20 +375,19 @@ class GameState(width: Int, height: Int) {
     }
 
     private fun attackCastle(unitCell: Cell, castleCell: Cell, context: Context) {
-        Log.d("Test", "Castle Attacked")
+
         val castle = castleCell.castle ?: return
         val attacker = unitCell.unit ?: return
         if (attacker.hasAttacked) return
 
         // Если форта нет или если замок игрока и там нет героя - просто идем в замок
         if (!castle.buildings.any { it is Fort } || (castle.isPlayer && castleCell.unit !is Hero)) {
-            Log.d("Test", "no fort, move into castle")
+
             moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
             return
         }
         // Если  есть форт и осада еще не начата, то начать осаду
         if (!castle.isUnderSiege && castle.buildings.any { it is Fort }) {
-            Log.d("Test", "Siege started")
             startSiege(castleCell)
         }
 
@@ -399,21 +403,25 @@ class GameState(width: Int, height: Int) {
             if (unitCell.terrain == Terrain.GATE) {
                 castle.health -= attacker.strength
                 attacker.hasAttacked = true
-                Toast.makeText(
-                    context,
-                    "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
-                    Toast.LENGTH_LONG
-                ).show()
+                try {
+                    Toast.makeText(
+                        context,
+                        "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }catch (_ : Exception) {}
             }
             if (unitCell.terrain == Terrain.WALL) {
                 castle.health -= attacker.strength
                 attacker.health -= castle.strength
                 attacker.hasAttacked = true
-                Toast.makeText(
-                    context,
-                    "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
-                    Toast.LENGTH_LONG
-                ).show()
+                try {
+                    Toast.makeText(
+                        context,
+                        "Castle took ${attacker.strength} of damage from ${unitCell.terrain}. Castle health is ${castle.health}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }catch (_ : Exception) {}
             }
         }
         if (castle.health <= 0) {
