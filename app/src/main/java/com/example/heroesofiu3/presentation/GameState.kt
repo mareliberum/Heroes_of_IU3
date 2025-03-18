@@ -1,6 +1,7 @@
 package com.example.heroesofiu3.presentation
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,7 +73,7 @@ class GameState(width: Int, height: Int) {
 
                     when {
                         cell.unit != null -> attackUnit(_selectedCell!!, cell, context)
-                        cell.castle != null -> attackCastle(_selectedCell!!, cell, context)
+                        cell.castle?.isPlayer == false -> attackCastle(_selectedCell!!, cell, context)
                         else ->moveUnit(_selectedCell!!, cell, getMaxDistanceFromSelectedCell())
                     }
                     _selectedCell = null
@@ -382,16 +383,21 @@ class GameState(width: Int, height: Int) {
 
         // Если форта нет или если замок игрока и там нет героя - просто идем в замок
         if (!castle.buildings.any { it is Fort } || (castle.isPlayer && castleCell.unit !is Hero)) {
-
             moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
+            Log.e("Log", "Siege can't be started - no hero or fort in castle")
             return
         }
         // Если  есть форт и осада еще не начата, то начать осаду
-        if (!castle.isUnderSiege && castle.buildings.any { it is Fort }) {
+        if (!castle.isUnderSiege && castle.buildings.any { it is Fort } && castle.health > 0) {
             startSiege(castleCell)
         }
 
+
         damageCastle(unitCell, castleCell, context)
+
+        // логи 3 типы логов. Логирование форта. Warning - началась осада. Info - раз в ход меняется стаутс форта(здоровье и тд. раз в ход)
+        // Error - если есть форт, но героя внутри нет. Осада не начнется
+        // Логи в внешний файл
     }
 
     private fun damageCastle(unitCell: Cell, castleCell: Cell, context: Context) {
@@ -423,14 +429,16 @@ class GameState(width: Int, height: Int) {
                     ).show()
                 }catch (_ : Exception) {}
             }
+            Log.i("Log", "Castle has taken damage. Health = ${castle.health}")
         }
         if (castle.health <= 0) {
-            endSiege(castleCell)
             moveUnit(unitCell, castleCell, attacker.maxDistance)
+            endSiege(castleCell)
         }
     }
 
     private fun startSiege(castleCell: Cell) {
+        Log.w("Log", "Siege started")
         val castle = castleCell.castle ?: return
         castle.isUnderSiege = true
 
@@ -443,6 +451,7 @@ class GameState(width: Int, height: Int) {
     }
 
     private fun endSiege(castleCell: Cell) {
+        Log.w("Log", "Siege ended")
         val castle = castleCell.castle ?: return
         castle.isUnderSiege = false
 

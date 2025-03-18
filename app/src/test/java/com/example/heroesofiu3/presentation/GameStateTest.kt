@@ -178,18 +178,12 @@ class GameStateTest {
         }
     }
 
-    //  TODO Спросить насчет этого теста
-    //  Он кажется бесполезным, поскольку клетка выбирается с экрана,
-    //  на котором отображен список клеток из gameField
-
     @Test
     fun `gameField shouldn't contain cells outside of the field`(){
         val gameState = GameState(10,10)
         val cellOutOfBound = gameState.gameField.getCell(11,11)
         assertNull(cellOutOfBound)
     }
-
-    // Проврка насчет нахождения юнитов на одной клетке тоже бесполезна, ввиду реализации Cell.unit
 
     @Test
     fun `attackUnit should kill unit if makes it's hp less than 0`(){

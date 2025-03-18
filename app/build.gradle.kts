@@ -70,13 +70,20 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    testImplementation(platform("org.junit:junit-bom:5.12.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.junit.bom)
+    testImplementation(libs.jupiter.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(kotlin("test"))
 
-    testImplementation("org.mockito:mockito-core:4.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.kotlin.logging.jvm)
+    implementation(libs.logback.classic )
+
+
 }
 
 
