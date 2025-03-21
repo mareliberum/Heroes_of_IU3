@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.data
+package com.example.heroesofiu3.data.DataEntities
 
 data class GameFieldData(
 	val width: Int,

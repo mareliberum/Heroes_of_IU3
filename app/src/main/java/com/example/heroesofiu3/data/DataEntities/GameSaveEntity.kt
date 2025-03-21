@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.data
+package com.example.heroesofiu3.data.DataEntities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

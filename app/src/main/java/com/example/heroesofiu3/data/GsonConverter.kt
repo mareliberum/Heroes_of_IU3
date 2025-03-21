@@ -1,5 +1,6 @@
 package com.example.heroesofiu3.data
 
+import com.example.heroesofiu3.data.DataEntities.GameFieldData
 import com.example.heroesofiu3.domain.entities.gameField.GameField
 import com.google.gson.Gson
 
@@ -24,3 +25,4 @@ fun String.toGameField(): GameField {
 	}
 	return gameField
 }
+

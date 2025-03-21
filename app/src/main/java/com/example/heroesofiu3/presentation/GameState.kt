@@ -20,6 +20,7 @@ import kotlin.math.sqrt
 
 class GameState(width: Int, height: Int) {
     var gameField = GameField(width, height)
+    var loadedGameField : GameField? = null
 
     private var _selectedCell by mutableStateOf<Cell?>(null)
     val selectedCell: Cell?
@@ -33,11 +34,8 @@ class GameState(width: Int, height: Int) {
         get() = _isGameOver
 
 
-    //  TODO обновить тут поле на то, которое я загружу из бд
     fun updateGameField(newGameField: GameField){
         gameField = newGameField
-        // дописать остальные параметры
-
     }
 
     fun resetGame() {

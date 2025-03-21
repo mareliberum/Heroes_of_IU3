@@ -9,7 +9,7 @@ class Knight(
     private val armor: Int = 40,
     maxDistance : Int = 4,
 
-) :
+    ) :
     Unit(name, health, strength, maxDistance, isPlayer)
 {
     override fun toString(): String {

@@ -1,8 +1,9 @@
 package com.example.heroesofiu3.data
 
 import android.content.Context
+import com.example.heroesofiu3.data.DataEntities.GameSave
+import com.example.heroesofiu3.data.room.AppDatabase
 import com.example.heroesofiu3.domain.entities.gameField.GameField
-import kotlinx.coroutines.flow.Flow
 
 class GameSavesDbRepository(context: Context) {
 
@@ -25,10 +26,9 @@ class GameSavesDbRepository(context: Context) {
 		return gameSave?.gameFieldJson?.toGameField()
 	}
 
-	fun getGameSaves(context: Context): Flow<List<GameSave>> {
+	suspend fun deleteAll(context: Context){
 		val db = AppDatabase.getDatabase(context)
-
-		return db.gameSaveDao().getAll()
+		db.gameSaveDao().deleteAll()
 	}
 
 	suspend fun getSavesCount(context: Context): Int {
