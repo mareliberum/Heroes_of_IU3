@@ -17,25 +17,33 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.heroesofiu3.data.GameSavesDbRepository
+import com.example.heroesofiu3.domain.entities.gameField.GameField
 import com.example.heroesofiu3.domain.game.initializeField
 import com.example.heroesofiu3.presentation.GameState
 import com.example.heroesofiu3.ui.components.BuildMenu
 import com.example.heroesofiu3.ui.components.CellInfo
 import com.example.heroesofiu3.ui.components.CellView
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun GameScreen() {
+fun GameScreen(repository: GameSavesDbRepository) {
     val context = LocalContext.current
     val gameState = remember { GameState(10, 10) }
     val gameField = gameState.gameField
     val selectedCell = gameState.selectedCell
     val availableMoves by gameState.availableMoves.collectAsState()
     val isGameOver = gameState.isGameOver
+    val coroutineScope = rememberCoroutineScope()
+
+    // Состояние для загруженного GameField
+    var loadedGameField by remember { mutableStateOf<GameField?>(null) }
 
 
     // Состояние для отображения GameOverScreen
@@ -50,6 +58,15 @@ fun GameScreen() {
     LaunchedEffect(isGameOver) {
         if (isGameOver != "") {
             showGameOverScreen = true // Показываем GameOverScreen
+        }
+    }
+
+    // Обновление состояния игры при загрузке
+    LaunchedEffect(loadedGameField) {
+        println("launched effect on update")
+        loadedGameField?.let { field ->
+            gameState.resetGame() // Сброс текущего состояния
+            gameState.updateGameField(field) // Обновление состояния игры
         }
     }
 
@@ -104,6 +121,54 @@ fun GameScreen() {
         ) {
             Text("Завершить ход")
         }
+
+
+        Button(
+            onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    repository.saveGame(context,gameField,"save one")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("SaveGame")
+        }
+
+
+
+        // TODO реализовать функцию загрузки
+        Button(
+            onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    // При обновлении запускает Launched Effect на обновление экрана
+                    loadedGameField = repository.loadGame(context,1)
+                    println(loadedGameField)
+                    println("game loaded")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("Load last game")
+        }
+
+        Button(
+            onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    println(repository.getSavesCount(context))
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("debug println saves count")
+        }
+
+
     }
     if (showGameOverScreen) {
         GameOverScreen(
@@ -116,3 +181,5 @@ fun GameScreen() {
         )
     }
 }
+
+
