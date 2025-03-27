@@ -33,7 +33,7 @@ class Cell(
 
     // Преобразование в CellData
     fun toCellData(): CellData {
-        return CellData(x, y, terrain, unit?.toData(), castle?.toData())      // TODO castle.toData
+        return CellData(x, y, terrain, unit?.toData(), castle?.toData())
     }
 
     // Восстановление из CellData

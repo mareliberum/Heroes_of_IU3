@@ -9,7 +9,6 @@ import com.example.heroesofiu3.data.DataEntities.GameSave
 @Database(entities = [GameSave::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
 	abstract fun gameSaveDao(): GameSaveDao
-
 	companion object {
 		@Volatile
 		private var INSTANCE: AppDatabase? = null
@@ -29,4 +28,5 @@ abstract class AppDatabase : RoomDatabase() {
 			}
 		}
 	}
+
 }

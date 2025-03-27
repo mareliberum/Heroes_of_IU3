@@ -16,7 +16,6 @@ class GameSavesDbRepository(context: Context) {
 		)
 		println("saved $gameSave")
 		db.gameSaveDao().insert(gameSave)
-
 	}
 
 	suspend fun loadGame(context: Context, saveId: Int): GameField? {
@@ -38,3 +37,5 @@ class GameSavesDbRepository(context: Context) {
 	}
 
 }
+
+

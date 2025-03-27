@@ -138,6 +138,7 @@ class GameState(width: Int, height: Int) {
 
             } else {
                 // Если атаковать некого, двигаемся в сторону замка игрока
+                Log.d("Log","move tvds castle")
                 moveTowardsPlayerCastle(botCell, context)
             }
         }
@@ -385,11 +386,11 @@ class GameState(width: Int, height: Int) {
         val castle = castleCell.castle ?: return
         val attacker = unitCell.unit ?: return
         if (attacker.hasAttacked) return
-
+        Log.d("Log", "attack casle")
         // Если форта нет или если замок игрока и там нет героя - просто идем в замок
         if (!castle.buildings.any { it is Fort } || (castle.isPlayer && castleCell.unit !is Hero)) {
-            moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
             Log.e("Log", "Siege can't be started - no hero or fort in castle")
+            moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
             return
         }
         // Если  есть форт и осада еще не начата, то начать осаду
