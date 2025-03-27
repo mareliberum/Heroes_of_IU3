@@ -20,6 +20,8 @@ class Castle(
     val gold : Int get() = _gold
 
 
+
+
     fun build(building: Building){
         if (_gold >= building.cost && !(_buildings.any { it::class == building :: class })){
             spendMoney(building.cost)

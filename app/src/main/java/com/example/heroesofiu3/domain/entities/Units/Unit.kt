@@ -10,5 +10,4 @@ abstract class Unit(
     var isBoosted: Boolean = false,
     var hasMoved: Boolean = false,
     var hasAttacked: Boolean = false,
-
-    )
+)
