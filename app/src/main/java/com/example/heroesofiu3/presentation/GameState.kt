@@ -19,7 +19,8 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class GameState(width: Int, height: Int) {
-    val gameField = GameField(width, height)
+    var gameField = GameField(width, height)
+    var loadedGameField : GameField? = null
 
     private var _selectedCell by mutableStateOf<Cell?>(null)
     val selectedCell: Cell?
@@ -32,6 +33,10 @@ class GameState(width: Int, height: Int) {
     val isGameOver: String
         get() = _isGameOver
 
+
+    fun updateGameField(newGameField: GameField){
+        gameField = newGameField
+    }
 
     fun resetGame() {
         gameField.reset() // Сброс игрового поля

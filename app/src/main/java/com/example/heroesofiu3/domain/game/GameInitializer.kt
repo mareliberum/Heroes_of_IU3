@@ -26,4 +26,6 @@ fun initializeField(field: GameField) {
     field.getCell(8, 8)?.castle!!.addBuiding(Barracks())
     field.getCell(8, 8)?.castle!!.addBuiding(Fort())
     field.getCell(8, 8)?.terrain = Terrain.UNREACHABLE
+
+
 }

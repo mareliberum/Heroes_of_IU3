@@ -1,8 +1,9 @@
 package com.example.heroesofiu3.domain.entities.gameField
 
+
 class GameField(val width: Int, val height: Int) {
 
-    private val cells: List<List<Cell>> = List(width) { x ->
+    internal val cells: List<List<Cell>> = List(width) { x ->
         List(height) { y ->
             Cell(
                 x, y,
