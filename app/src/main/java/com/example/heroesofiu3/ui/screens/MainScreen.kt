@@ -35,16 +35,18 @@ fun MainScreen(navController: NavController){
 				"Продолжить игру"
 			)
 		}
-		Button(onClick =
-		{navController.navigate(Screen.SaveListScreen.route)},
+
+		Button(
+			onClick =
+			{
+				navController.navigate(Screen.SaveListScreen.route)
+			},
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp))
-
+				.padding(16.dp),
+		)
 		{
-			Text(
-				"Загрузить"
-			)
+			Text("Загрузить")
 		}
 
 	}

@@ -4,10 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,8 +82,10 @@ fun GameScreen(navController: NavHostController) {
             horizontalArrangement = Arrangement.Absolute.Right
         ) {
             Icon(
-                Icons.Rounded.Menu,
-                contentDescription = "Saves"
+                imageVector = Icons.Rounded.Menu,
+                contentDescription = "Saves",
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -118,17 +123,39 @@ fun GameScreen(navController: NavHostController) {
             BuildMenu(selectedCell)
         }
 
-        // Кнопка "Завершить ход"
-        Button(
-            onClick = {
-                gameState.makeBotMove(context) // Вызов хода бота
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text("Завершить ход")
+        // кнопочки концца хода и в главное меню не показываем при отображении меню построек замка, чтобе не перегружать экран
+        if(selectedCell?.castle == null){
+            Column (modifier = Modifier.fillMaxSize()){
+                // Кнопка "Завершить ход"
+                Button(
+                    onClick = {
+                        gameState.makeBotMove(context) // Вызов хода бота
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text("Завершить ход")
+                }
+
+                Spacer(Modifier.weight(1f))
+
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.MainScreen.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+
+                ) {
+                    Text("В главное меню")
+                }
+
+            }
         }
+
+
 
 
     }
