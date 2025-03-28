@@ -16,8 +16,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -140,16 +142,17 @@ fun GameScreen(navController: NavHostController) {
 
                 Spacer(Modifier.weight(1f))
 
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.MainScreen.route)
-                    },
+                // Кнопка в меню
+                OutlinedButton(
+                    onClick = { navController.navigate(Screen.MainScreen.route) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-
+                        .padding(top = 16.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
                 ) {
-                    Text("В главное меню")
+                    Text("Вернуться в меню")
                 }
 
             }

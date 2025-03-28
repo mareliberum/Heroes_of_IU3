@@ -170,7 +170,7 @@ fun SaveListScreen(navController: NavController? = null) {
 				contentColor = MaterialTheme.colorScheme.onSurface
 			)
 		) {
-			Text("Вернуться в меню")
+			Text("Выйти")
 		}
 	}
 
@@ -255,7 +255,7 @@ fun SaveItemCard(
 					overflow = TextOverflow.Ellipsis
 				)
 				Text(
-					text = "22:22 28.03.2025",
+					text = "",
 //					SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.UK)
 //						.format(Date(save.timestamp)),
 					style = MaterialTheme.typography.bodySmall,
@@ -290,10 +290,4 @@ fun SaveItemCard(
 	}
 }
 
-// Модель для mock данных
-data class MockGameSave(
-	val id: Int,
-	val name: String,
-	val timestamp: Long
-)
 
