@@ -125,6 +125,9 @@ dependencies {
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // navigation
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+
 
 
 

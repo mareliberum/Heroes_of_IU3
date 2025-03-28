@@ -26,37 +26,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.heroesofiu3.data.GameSavesDbRepository
+import androidx.navigation.NavHostController
+import com.example.heroesofiu3.LocalSharedViewModel
+import com.example.heroesofiu3.Screen
+import com.example.heroesofiu3.domain.entities.gameField.Cell
 import com.example.heroesofiu3.domain.game.initializeField
-import com.example.heroesofiu3.presentation.GameState
 import com.example.heroesofiu3.ui.components.BuildMenu
 import com.example.heroesofiu3.ui.components.CellInfo
 import com.example.heroesofiu3.ui.components.CellView
 
 @Composable
-fun GameScreen(repository: GameSavesDbRepository) {
+fun GameScreen(navController: NavHostController) {
+    val viewModel = LocalSharedViewModel.current
+
     val context = LocalContext.current
-    val gameState = remember { GameState(10, 10) }
+    val gameState by viewModel.gameState.collectAsState()
     val gameField = gameState.gameField
     val selectedCell = gameState.selectedCell
     val availableMoves by gameState.availableMoves.collectAsState()
     val isGameOver = gameState.isGameOver
 
-
     val loadedGameField = gameState.loadedGameField
-
 
     // Состояние для отображения GameOverScreen
     var showGameOverScreen by remember { mutableStateOf(false) }
 
-    var showSavesScreen by remember { mutableStateOf(false) }
-
-
-
-    // Инициализация поля
-    LaunchedEffect(Unit) {
-        initializeField(gameField)
-    }
 
     LaunchedEffect(isGameOver) {
         if (isGameOver != "") {
@@ -64,12 +58,14 @@ fun GameScreen(repository: GameSavesDbRepository) {
         }
     }
 
-
     // Обновление состояния игры при загрузке
     LaunchedEffect(loadedGameField) {
         loadedGameField?.let { field ->
             gameState.updateGameField(field) // Обновление состояния игры
         }
+        // костыль, чтобы вызвать рекомпозицию, по нормальному почему-то не работает
+        gameState.selectCell(Cell(100,100), context)
+
     }
 
     // Отображение игрового поля
@@ -79,8 +75,8 @@ fun GameScreen(repository: GameSavesDbRepository) {
             .padding(top = 32.dp, start = 14.dp, end = 14.dp, bottom = 8.dp),
     ) {
         Row(
-            modifier = Modifier.clickable { showSavesScreen = !showSavesScreen },
-            horizontalArrangement = Arrangement.End
+            modifier = Modifier.clickable { navController.navigate(Screen.SaveMenu.route) },
+            horizontalArrangement = Arrangement.Absolute.Right
         ) {
             Icon(
                 Icons.Rounded.Menu,
@@ -147,13 +143,6 @@ fun GameScreen(repository: GameSavesDbRepository) {
             }
         )
     }
-    if (showSavesScreen){
-        SavesScreen(
-            gameState,
-            repository
-        )
-    }
-
 }
 
 

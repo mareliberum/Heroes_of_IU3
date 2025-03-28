@@ -1,28 +1,38 @@
 package com.example.heroesofiu3.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.heroesofiu3.data.GameSavesDbRepository
-import com.example.heroesofiu3.presentation.GameState
+import androidx.navigation.NavController
+import com.example.heroesofiu3.LocalGameSavesRepository
+import com.example.heroesofiu3.LocalSharedViewModel
+import com.example.heroesofiu3.Screen
+import com.example.heroesofiu3.data.getCurrentDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun SavesScreen(gameState: GameState, repository: GameSavesDbRepository) {
+fun SaveMenu(navController: NavController) {
+	val viewModel = LocalSharedViewModel.current
+	val repository = LocalGameSavesRepository.current
+
+	val gameState by viewModel.gameState.collectAsState()
 	val gameField = gameState.gameField
 
 	val context = LocalContext.current
 	val coroutineScope = rememberCoroutineScope()
-	
 
 	Column(
 		modifier = Modifier
@@ -34,14 +44,14 @@ fun SavesScreen(gameState: GameState, repository: GameSavesDbRepository) {
 		Button(
 			onClick = {
 				coroutineScope.launch(Dispatchers.IO) {
-					repository.saveGame(context, gameField, "save one")
+					repository.saveGame(context, gameField, getCurrentDateTime())
 				}
 			},
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(16.dp)
 		) {
-			Text("SaveGame")
+			Text("Быстрое сохранение")
 		}
 
 		Button(
@@ -49,27 +59,46 @@ fun SavesScreen(gameState: GameState, repository: GameSavesDbRepository) {
 				coroutineScope.launch(Dispatchers.IO) {
 					// При обновлении запускает Launched Effect на обновление экрана
 					gameState.loadedGameField = repository.loadGame(context, 1)
-					println("game loaded")
+					withContext(Dispatchers.Main){
+						navController.popBackStack()
+					}
 				}
+
 			},
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(16.dp)
 		) {
-			Text("Load last game")
+			Text("Быстрая загрузка")
 		}
 
 		Button(
-			onClick = {
-				coroutineScope.launch(Dispatchers.IO) {
-					repository.deleteAll(context)
-				}
-			},
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp)
+				.wrapContentHeight()
+				.padding(16.dp),
+			onClick = {
+				navController.navigate(Screen.SaveListScreen.route)
+			}
 		) {
-			Text("drop db")
+			Text(
+				"Загрузить"
+			)
+		}
+
+		Spacer(modifier = Modifier.weight(1f))
+
+		Button(
+			modifier = Modifier
+				.fillMaxWidth()
+				.wrapContentHeight()
+				.padding(16.dp),
+			onClick = {
+				navController.navigate(Screen.GameScreen.route)
+			}
+		)
+		{
+			Text("Назад")
 		}
 	}
 }
