@@ -1,6 +1,7 @@
 package com.example.heroesofiu3.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -16,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.heroesofiu3.LocalGameSavesRepository
 import com.example.heroesofiu3.LocalSharedViewModel
+import com.example.heroesofiu3.Screen
+import com.example.heroesofiu3.data.getCurrentDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,7 +34,6 @@ fun SaveMenu(navController: NavController) {
 	val context = LocalContext.current
 	val coroutineScope = rememberCoroutineScope()
 
-
 	Column(
 		modifier = Modifier
 			.wrapContentHeight()
@@ -42,14 +44,14 @@ fun SaveMenu(navController: NavController) {
 		Button(
 			onClick = {
 				coroutineScope.launch(Dispatchers.IO) {
-					repository.saveGame(context, gameField, "save one")
+					repository.saveGame(context, gameField, getCurrentDateTime())
 				}
 			},
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(16.dp)
 		) {
-			Text("SaveGame")
+			Text("Быстрое сохранение")
 		}
 
 		Button(
@@ -67,20 +69,36 @@ fun SaveMenu(navController: NavController) {
 				.fillMaxWidth()
 				.padding(16.dp)
 		) {
-			Text("Load last game")
+			Text("Быстрая загрузка")
 		}
 
 		Button(
-			onClick = {
-				coroutineScope.launch(Dispatchers.IO) {
-					repository.deleteAll(context)
-				}
-			},
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp)
+				.wrapContentHeight()
+				.padding(16.dp),
+			onClick = {
+				navController.navigate(Screen.SaveListScreen.route)
+			}
 		) {
-			Text("drop db")
+			Text(
+				"Загрузить"
+			)
+		}
+
+		Spacer(modifier = Modifier.weight(1f))
+
+		Button(
+			modifier = Modifier
+				.fillMaxWidth()
+				.wrapContentHeight()
+				.padding(16.dp),
+			onClick = {
+				navController.navigate(Screen.GameScreen.route)
+			}
+		)
+		{
+			Text("Назад")
 		}
 	}
 }

@@ -18,7 +18,7 @@ import com.example.heroesofiu3.Screen
 
 @Composable
 fun MainScreen(navController: NavController){
-	val repository = LocalGameSavesRepository.current
+	LocalGameSavesRepository.current
 	Column(modifier = Modifier
 		.fillMaxSize()
 		.background(MaterialTheme.colorScheme.background),
@@ -32,18 +32,18 @@ fun MainScreen(navController: NavController){
 
 		{
 			Text(
-				"New Game"
+				"Продолжить игру"
 			)
 		}
 		Button(onClick =
-		{},
+		{navController.navigate(Screen.SaveListScreen.route)},
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(16.dp))
 
 		{
 			Text(
-				"Load Game"
+				"Загрузить"
 			)
 		}
 

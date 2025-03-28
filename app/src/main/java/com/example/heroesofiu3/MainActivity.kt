@@ -22,6 +22,7 @@ import com.example.heroesofiu3.data.GameSavesDbRepository
 import com.example.heroesofiu3.domain.viewModels.SharedViewModel
 import com.example.heroesofiu3.ui.screens.GameScreen
 import com.example.heroesofiu3.ui.screens.MainScreen
+import com.example.heroesofiu3.ui.screens.SaveListScreen
 import com.example.heroesofiu3.ui.screens.SaveMenu
 import com.example.heroesofiu3.ui.theme.HeroesOfIU3Theme
 
@@ -84,7 +85,7 @@ fun App() {
 //                    NewGameScreen(navController)
 //                }
 
-                // Экран списка сохранений
+                // Экран экрана сохранений внутри игры
                 composable(Screen.SaveMenu.route) {
                     SaveMenu(navController)
                 }
@@ -93,6 +94,10 @@ fun App() {
                 composable(Screen.GameScreen.route) {
                     GameScreen(navController)
                 }
+                composable(Screen.SaveListScreen.route) {
+                    SaveListScreen(navController)
+                }
+
             }
 
         }
@@ -105,10 +110,9 @@ sealed class Screen(val route: String) {
     data object NewGameScreen : Screen("new_game")
     data object SaveMenu : Screen("save_menu")
     data object GameScreen : Screen("game/{gameFieldJson}")
+    data object SaveListScreen : Screen("save_list")
 
-//        {fun createRoute(gameFieldJson: String): String {
-//            return "game/$gameFieldJson"
-//        }}
+
 
 }
 

@@ -10,7 +10,7 @@ class GameSavesDbRepository(context: Context) {
 	suspend fun saveGame(context: Context, gameField: GameField, saveName: String) {
 		val db = AppDatabase.getDatabase(context)
 		val gameSave = GameSave(
-			id = 1,
+			id = 0,
 			name = saveName,
 			gameFieldJson = gameField.toJson()
 		)
@@ -34,6 +34,15 @@ class GameSavesDbRepository(context: Context) {
 		val db = AppDatabase.getDatabase(context)
 		return db.gameSaveDao().getCount()
 
+	}
+	suspend fun getAll(context: Context): List<GameSave> {
+		val db = AppDatabase.getDatabase(context)
+		return db.gameSaveDao().getAll()
+	}
+
+	suspend fun deleteById(context: Context, id: Int){
+		val db = AppDatabase.getDatabase(context)
+		db.gameSaveDao().deleteByID(id)
 	}
 
 }
