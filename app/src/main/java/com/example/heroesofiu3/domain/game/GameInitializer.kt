@@ -17,7 +17,7 @@ fun initializeField(field: GameField) {
     field.getCell(8, 1)?.unit = Knight("Mega Knight", true, health = 1000, strength = 1000, maxDistance = 100)
     field.getCell(7, 1)?.unit = Knight("Fast Knight", true, health = 1000, maxDistance = 100)
     field.getCell(1, 1)?.castle = Castle("Blue", true)
-    field.getCell(1, 1)?.castle!!.addGold(1000)
+    field.getCell(1, 1)?.castle!!.addGold(500)
 
     // Бот:
     field.getCell(9, 9)?.unit = Hero("Hero", false)
@@ -25,6 +25,7 @@ fun initializeField(field: GameField) {
     field.getCell(8, 8)?.castle = Castle("Red", false)
     field.getCell(8, 8)?.castle!!.addBuiding(Barracks())
     field.getCell(8, 8)?.castle!!.addBuiding(Fort())
+    field.getCell(8, 8)?.castle!!.addGold(500)
     field.getCell(8, 8)?.terrain = Terrain.UNREACHABLE
 
 

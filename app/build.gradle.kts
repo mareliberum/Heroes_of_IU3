@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+	implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.play.services.games.v2)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter)
@@ -127,6 +129,8 @@ dependencies {
 
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
+
+    implementation("androidx.compose.material:material-icons-extended")
 
 
 

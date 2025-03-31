@@ -71,7 +71,6 @@ fun GameScreen(navController: NavHostController) {
         if (isGameOver != "") {
             showGameOverScreen = true // Показываем GameOverScreen
         }
-
     }
 
     // Обновление состояния игры при загрузке
@@ -81,7 +80,6 @@ fun GameScreen(navController: NavHostController) {
         }
         // костыль, чтобы вызвать рекомпозицию, по нормальному почему-то не работает
         gameState.selectCell(Cell(100,100), context)
-
     }
 
     // Отображение игрового поля

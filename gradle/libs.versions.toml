@@ -12,6 +12,8 @@ composeBom = "2025.03.00"
 junitJupiter = "5.12.0"
 mockitoCore = "4.0.0"
 mockitoKotlin = "4.0.0"
+media3Exoplayer = "1.6.0"
+playServicesGamesV2 = "20.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +39,8 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
 logback-classic = {group = "ch.qos.logback", name =  "logback-classic", version = "1.3.5"}
+androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
+play-services-games-v2 = { group = "com.google.android.gms", name = "play-services-games-v2", version.ref = "playServicesGamesV2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
