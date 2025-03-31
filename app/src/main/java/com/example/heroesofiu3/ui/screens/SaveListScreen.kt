@@ -147,6 +147,7 @@ fun SaveListScreen(navController: NavController? = null) {
 						coroutineScope.launch(Dispatchers.IO) {
 							// При обновлении запускает Launched Effect на обновление экрана
 							gameState.loadedGameField = repository.loadGame(context, save.id)
+							gameState.setScore(repository.getScore(context, save.id) ?: 0)
 							withContext(Dispatchers.Main){
 								navController?.navigate(Screen.GameScreen.route)
 							}

@@ -1,5 +1,6 @@
 package com.example.heroesofiu3.domain.entities.gameField
 
+import com.example.heroesofiu3.domain.game.initializeField
 
 class GameField(val width: Int, val height: Int) {
 
@@ -42,5 +43,6 @@ class GameField(val width: Int, val height: Int) {
                 else Terrain.OBSTACLE
             }
         }
+        initializeField(this)
     }
 }

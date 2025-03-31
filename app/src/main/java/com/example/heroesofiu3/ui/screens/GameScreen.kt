@@ -1,6 +1,5 @@
 package com.example.heroesofiu3.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -50,6 +50,7 @@ fun GameScreen(navController: NavHostController) {
     val selectedCell = gameState.selectedCell
     val availableMoves by gameState.availableMoves.collectAsState()
     val isGameOver = gameState.isGameOver
+    val score = gameState.score
 
     val loadedGameField = gameState.loadedGameField
 
@@ -80,14 +81,20 @@ fun GameScreen(navController: NavHostController) {
             .padding(top = 32.dp, start = 14.dp, end = 14.dp, bottom = 8.dp),
     ) {
         Row(
-            modifier = Modifier.clickable { navController.navigate(Screen.SaveMenu.route) },
-            horizontalArrangement = Arrangement.Absolute.Right
+            horizontalArrangement = Arrangement.Absolute.Right,
         ) {
-            Icon(
-                imageVector = Icons.Rounded.Menu,
-                contentDescription = "Saves",
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+            IconButton(onClick = {navController.navigate(Screen.SaveMenu.route)}
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = "Saves",
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Text(
+                "score: $score"
             )
         }
 
@@ -165,7 +172,7 @@ fun GameScreen(navController: NavHostController) {
 
     if (showGameOverScreen) {
         GameOverScreen(
-            message = isGameOver,
+            message = "$isGameOver\n Score: $score",
             onRestart = {
                 gameState.resetGame() // Сброс состояния игры
                 initializeField(gameField) // Повторная инициализация поля
@@ -174,6 +181,8 @@ fun GameScreen(navController: NavHostController) {
         )
     }
 }
+
+
 
 
 

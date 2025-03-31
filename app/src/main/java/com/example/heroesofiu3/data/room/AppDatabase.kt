@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.heroesofiu3.data.DataEntities.GameSave
 
-@Database(entities = [GameSave::class], version = 5)
+@Database(entities = [GameSave::class], version = 6)
 abstract class AppDatabase : RoomDatabase() {
 	abstract fun gameSaveDao(): GameSaveDao
 	companion object {

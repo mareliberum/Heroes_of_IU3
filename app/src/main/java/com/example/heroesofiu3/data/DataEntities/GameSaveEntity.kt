@@ -8,5 +8,6 @@ data class GameSave(
 	@PrimaryKey(autoGenerate = true)
 	val id : Int,
 	val name: String, // Имя сохранения
-	val gameFieldJson: String // JSON-строка GameField
+	val gameFieldJson: String, // JSON-строка GameField
+	val score : Int,  //очки
 )
