@@ -23,7 +23,6 @@ class GameState(width: Int, height: Int) {
     var gameField = GameField(width, height)
     var loadedGameField : GameField? = null
 
-
     private var _selectedCell by mutableStateOf<Cell?>(null)
     val selectedCell: Cell?
         get() = _selectedCell
@@ -36,6 +35,7 @@ class GameState(width: Int, height: Int) {
         get() = _isGameOver
 
     private var _score by mutableIntStateOf(0)
+
     val score : Int
         get() = _score
 
@@ -154,7 +154,13 @@ class GameState(width: Int, height: Int) {
             }
         }
         when (checkGameOver()) {
-            GameResult.PlayerWins -> showGameOver(context, "Player Wins!")
+            GameResult.PlayerWins ->
+            {
+                showGameOver(context, "Player Wins!")
+
+            }
+
+
             else -> {}
         }
     }

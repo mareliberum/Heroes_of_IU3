@@ -27,11 +27,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.heroesofiu3.LocalRecordsSavesRepository
 import com.example.heroesofiu3.LocalSharedViewModel
 import com.example.heroesofiu3.Screen
 import com.example.heroesofiu3.domain.entities.gameField.Cell
@@ -39,10 +41,14 @@ import com.example.heroesofiu3.domain.game.initializeField
 import com.example.heroesofiu3.ui.components.BuildMenu
 import com.example.heroesofiu3.ui.components.CellInfo
 import com.example.heroesofiu3.ui.components.CellView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun GameScreen(navController: NavHostController) {
     val viewModel = LocalSharedViewModel.current
+    val recordsRepository = LocalRecordsSavesRepository.current
+    val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
     val gameState by viewModel.gameState.collectAsState()
@@ -59,9 +65,13 @@ fun GameScreen(navController: NavHostController) {
 
 
     LaunchedEffect(isGameOver) {
+        coroutineScope.launch(Dispatchers.IO) {
+            recordsRepository.saveRecord(context,viewModel.name, score)
+        }
         if (isGameOver != "") {
             showGameOverScreen = true // Показываем GameOverScreen
         }
+
     }
 
     // Обновление состояния игры при загрузке
@@ -171,6 +181,7 @@ fun GameScreen(navController: NavHostController) {
     }
 
     if (showGameOverScreen) {
+
         GameOverScreen(
             message = "$isGameOver\n Score: $score",
             onRestart = {
@@ -179,6 +190,7 @@ fun GameScreen(navController: NavHostController) {
                 showGameOverScreen = false
             }
         )
+
     }
 }
 

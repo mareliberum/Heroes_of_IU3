@@ -23,32 +23,59 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.heroesofiu3.LocalRecordsSavesRepository
+import com.example.heroesofiu3.data.DataEntities.RecordSave
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecordsScreen(navController: NavController) {
+	val repository = LocalRecordsSavesRepository.current
 	// Mock данные для рекордов (замените на реальные из вашего репозитория)
-	val records = remember {
-		listOf(
-			Record("Игрок 1", 150, "12.05.2023"),
-			Record("Вы", 200, "15.05.2023"),
-			Record("Игрок 2", 100, "10.05.2023"),
-			Record("Игрок 3", 180, "11.05.2023"),
-			Record("Игрок 4", 90, "09.05.2023"),
-			Record("Игрок 5", 210, "16.05.2023"),
-		)
-	}
+//	val records = remember {
+//		listOf(
+//			Record("Игрок 1", 150, "12.05.2023"),
+//			Record("Вы", 200, "15.05.2023"),
+//			Record("Игрок 2", 100, "10.05.2023"),
+//			Record("Игрок 3", 180, "11.05.2023"),
+//			Record("Игрок 4", 90, "09.05.2023"),
+//			Record("Игрок 5", 210, "16.05.2023"),
+//		)
+//	}
+	var records by remember { mutableStateOf<List<RecordSave>>(emptyList()) }
 
 	var sortBy by remember { mutableStateOf(SortBy.SCORE) }
+	val coroutineScope = rememberCoroutineScope()
+	var isLoading by remember { mutableStateOf(true) }
+	val context = LocalContext.current
+
+	fun loadRecords(){
+		coroutineScope.launch(Dispatchers.IO) {
+			try {
+				records = repository.getAll(context)
+				isLoading = false
+			} catch (e: Exception) {
+				isLoading = false
+			}
+		}
+	}
+
+	LaunchedEffect(Unit) {
+		loadRecords()
+	}
 
 	Column(
 		modifier = Modifier
@@ -101,11 +128,11 @@ fun RecordsScreen(navController: NavController) {
 					SortBy.SCORE -> records.sortedByDescending { it.score }
 					SortBy.DATE -> records.sortedByDescending { it.date }
 				},
-				key = { it.playerName + it.score }
+//				key = { it.name + it.score + getCurrentDateTime() }
 			) { record ->
 				RecordItem(
 					record = record,
-					isCurrentPlayer = record.playerName == "Вы"
+					isCurrentPlayer = record.name == "Вы"
 				)
 			}
 		}
@@ -121,7 +148,7 @@ fun RecordsScreen(navController: NavController) {
 }
 
 @Composable
-fun RecordItem(record: Record, isCurrentPlayer: Boolean) {
+fun RecordItem(record: RecordSave, isCurrentPlayer: Boolean) {
 	Card(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -137,7 +164,7 @@ fun RecordItem(record: Record, isCurrentPlayer: Boolean) {
 		) {
 			Column(modifier = Modifier.weight(1f)) {
 				Text(
-					text = record.playerName,
+					text = record.name,
 					style = MaterialTheme.typography.titleMedium,
 					color = if (isCurrentPlayer) MaterialTheme.colorScheme.primary
 					else MaterialTheme.colorScheme.onSurface
