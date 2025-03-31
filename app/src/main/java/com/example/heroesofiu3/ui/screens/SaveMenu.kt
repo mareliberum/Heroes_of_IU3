@@ -44,7 +44,7 @@ fun SaveMenu(navController: NavController) {
 		Button(
 			onClick = {
 				coroutineScope.launch(Dispatchers.IO) {
-					repository.saveGame(context, gameField, getCurrentDateTime())
+					repository.saveGame(context, gameField, getCurrentDateTime(), gameState.score)
 				}
 			},
 			modifier = Modifier
@@ -59,6 +59,7 @@ fun SaveMenu(navController: NavController) {
 				coroutineScope.launch(Dispatchers.IO) {
 					// При обновлении запускает Launched Effect на обновление экрана
 					gameState.loadedGameField = repository.loadGame(context, 1)
+					gameState.setScore(repository.getScore(context, 1) ?: 0)
 					withContext(Dispatchers.Main){
 						navController.popBackStack()
 					}

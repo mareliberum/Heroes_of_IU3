@@ -24,6 +24,7 @@ fun GameOverScreen(message: String, onRestart: () -> Unit){
     ) {
         Text(text = message, fontSize = 18.sp)
 
+
         Button(onClick = onRestart ) {
             Text(text = "New Game")
         }

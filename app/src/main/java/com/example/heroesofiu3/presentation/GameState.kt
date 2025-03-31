@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.heroesofiu3.domain.entities.Units.Hero
@@ -33,6 +34,15 @@ class GameState(width: Int, height: Int) {
     val isGameOver: String
         get() = _isGameOver
 
+    private var _score by mutableIntStateOf(0)
+
+    val score : Int
+        get() = _score
+
+    fun setScore(newScore : Int){
+        _score = newScore
+    }
+
 
     fun updateGameField(newGameField: GameField){
         gameField = newGameField
@@ -43,6 +53,7 @@ class GameState(width: Int, height: Int) {
         _selectedCell = null
         _availableMoves.value = emptyList()
         _isGameOver = ""
+        _score = 0
     }
 
     // Обработка действий игрока
@@ -143,7 +154,13 @@ class GameState(width: Int, height: Int) {
             }
         }
         when (checkGameOver()) {
-            GameResult.PlayerWins -> showGameOver(context, "Player Wins!")
+            GameResult.PlayerWins ->
+            {
+                showGameOver(context, "Player Wins!")
+
+            }
+
+
             else -> {}
         }
     }
@@ -208,6 +225,8 @@ class GameState(width: Int, height: Int) {
                 to.unit = null // Юнит игрока уничтожен
                 if (attacker.isPlayer) {
                     findPlayerCastle()?.castle?.addGold(500)
+                    _score += 1
+                    println("score $_score")
                 } else {
                     findBotCastle()?.castle?.addGold(500)
                 }

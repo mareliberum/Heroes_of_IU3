@@ -7,12 +7,13 @@ import com.example.heroesofiu3.domain.entities.gameField.GameField
 
 class GameSavesDbRepository(context: Context) {
 
-	suspend fun saveGame(context: Context, gameField: GameField, saveName: String) {
+	suspend fun saveGame(context: Context, gameField: GameField, saveName: String, score : Int) {
 		val db = AppDatabase.getDatabase(context)
 		val gameSave = GameSave(
 			id = 0,
 			name = saveName,
-			gameFieldJson = gameField.toJson()
+			gameFieldJson = gameField.toJson(),
+			score = score
 		)
 		println("saved $gameSave")
 		db.gameSaveDao().insert(gameSave)
@@ -21,8 +22,14 @@ class GameSavesDbRepository(context: Context) {
 	suspend fun loadGame(context: Context, saveId: Int): GameField? {
 		val db = AppDatabase.getDatabase(context)
 		val gameSave = db.gameSaveDao().getById(saveId)
-		println(gameSave)
+		gameSave?.score
 		return gameSave?.gameFieldJson?.toGameField()
+	}
+
+	suspend fun getScore(context: Context, saveId: Int): Int? {
+		val db = AppDatabase.getDatabase(context)
+		val gameSave = db.gameSaveDao().getById(saveId)
+		return gameSave?.score
 	}
 
 	suspend fun deleteAll(context: Context){
@@ -46,5 +53,3 @@ class GameSavesDbRepository(context: Context) {
 	}
 
 }
-
-

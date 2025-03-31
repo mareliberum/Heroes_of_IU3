@@ -13,9 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -41,12 +40,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.heroesofiu3.LocalGameSavesRepository
 import com.example.heroesofiu3.LocalSharedViewModel
+import com.example.heroesofiu3.R
 import com.example.heroesofiu3.Screen
 import com.example.heroesofiu3.data.DataEntities.GameSave
 import kotlinx.coroutines.Dispatchers
@@ -68,15 +69,6 @@ fun SaveListScreenPreview() {
 
 @Composable
 fun SaveListScreen(navController: NavController? = null) {
-	// Mock данные для превью
-	val mockSaves = listOf(
-		MockGameSave(1, "Автосохранение", System.currentTimeMillis() - 3600000),
-		MockGameSave(2, "Важная партия", System.currentTimeMillis() - 86400000),
-		MockGameSave(3, "Победа над боссом", System.currentTimeMillis() - 172800000),
-		MockGameSave(4, "Тестовое сохранение", System.currentTimeMillis() - 259200000),
-		MockGameSave(5, "Утренняя игра", System.currentTimeMillis() - 432000000),
-	)
-
 
 	val viewModel = LocalSharedViewModel.current
 	val repository = LocalGameSavesRepository.current
@@ -124,12 +116,17 @@ fun SaveListScreen(navController: NavController? = null) {
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier.padding(bottom = 24.dp)
 		) {
-			Icon(
-				imageVector = Icons.Default.Add,
-				contentDescription = "Сохранения",
-				tint = MaterialTheme.colorScheme.primary,
-				modifier = Modifier.size(32.dp)
-			)
+			IconButton(
+				modifier = Modifier.size(32.dp),
+				onClick = { navController?.popBackStack() }
+			) {
+				Icon(
+					modifier = Modifier.size(32.dp),
+					imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+					contentDescription = "Сохранения",
+					tint = MaterialTheme.colorScheme.primary,
+				)
+			}
 			Spacer(modifier = Modifier.width(16.dp))
 			Text(
 				text = "Мои сохранения",
@@ -150,6 +147,7 @@ fun SaveListScreen(navController: NavController? = null) {
 						coroutineScope.launch(Dispatchers.IO) {
 							// При обновлении запускает Launched Effect на обновление экрана
 							gameState.loadedGameField = repository.loadGame(context, save.id)
+							gameState.setScore(repository.getScore(context, save.id) ?: 0)
 							withContext(Dispatchers.Main){
 								navController?.navigate(Screen.GameScreen.route)
 							}
@@ -173,7 +171,7 @@ fun SaveListScreen(navController: NavController? = null) {
 				contentColor = MaterialTheme.colorScheme.onSurface
 			)
 		) {
-			Text("Вернуться в меню")
+			Text("Выйти")
 		}
 	}
 
@@ -239,7 +237,7 @@ fun SaveItemCard(
 		) {
 			// Иконка сохранения
 			Icon(
-				imageVector = Icons.Default.Favorite,
+				painter = painterResource(R.drawable.save_icon),
 				contentDescription = "Сохранение игры",
 				modifier = Modifier.size(40.dp),
 				tint = MaterialTheme.colorScheme.primary
@@ -258,7 +256,7 @@ fun SaveItemCard(
 					overflow = TextOverflow.Ellipsis
 				)
 				Text(
-					text = "22:22 28.03.2025",
+					text = "",
 //					SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.UK)
 //						.format(Date(save.timestamp)),
 					style = MaterialTheme.typography.bodySmall,
@@ -293,10 +291,4 @@ fun SaveItemCard(
 	}
 }
 
-// Модель для mock данных
-data class MockGameSave(
-	val id: Int,
-	val name: String,
-	val timestamp: Long
-)
 

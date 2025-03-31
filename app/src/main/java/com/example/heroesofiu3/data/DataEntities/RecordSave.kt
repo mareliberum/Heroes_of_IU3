@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class GameSave(
+data class RecordSave(
 	@PrimaryKey(autoGenerate = true)
 	val id : Int,
-	val name: String, // Имя сохранения
-	val gameFieldJson: String, // JSON-строка GameField
+	val name: String, // имя игрока
 	val score : Int,  //очки
+	val date : String,
 )
