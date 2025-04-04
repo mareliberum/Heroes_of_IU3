@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.PlayArrow
@@ -112,6 +113,16 @@ fun MainScreen(navController: NavController) {
 				},
 				text = "Таблица рекордов",
 				icon = Icons.Default.Leaderboard,
+				modifier = Modifier.fillMaxWidth(0.8f)
+			)
+
+			// Добавляем кнопку для игры в кости
+			MenuButton(
+				onClick = {
+					navController.navigate(Screen.DiceGameScreen.route)
+				},
+				text = "Игра в кости",
+				icon = Icons.Default.Casino,
 				modifier = Modifier.fillMaxWidth(0.8f)
 			)
 

@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.heroesofiu3.data.GameSavesDbRepository
 import com.example.heroesofiu3.data.RecordsDbRepository
 import com.example.heroesofiu3.domain.viewModels.SharedViewModel
+import com.example.heroesofiu3.ui.screens.DiceGameScreen
 import com.example.heroesofiu3.ui.screens.GameScreen
 import com.example.heroesofiu3.ui.screens.MainScreen
 import com.example.heroesofiu3.ui.screens.MapEditorScreen
@@ -116,6 +117,9 @@ fun App() {
                 composable(Screen.PlayerScreen.route){
                     PlayerScreen(navController)
                 }
+                composable(Screen.DiceGameScreen.route){
+                    DiceGameScreen(navController)
+                }
 
             }
 
@@ -132,6 +136,7 @@ sealed class Screen(val route: String) {
     data object SaveListScreen : Screen("save_list")
     data object RecordsScreen : Screen("records")
     data object PlayerScreen : Screen("player")
+    data object DiceGameScreen : Screen("dice_game")
 
 
 }
