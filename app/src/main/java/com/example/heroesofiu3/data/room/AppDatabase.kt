@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.heroesofiu3.data.DataEntities.GameSave
 import com.example.heroesofiu3.data.DataEntities.RecordSave
 
-@Database(entities = [GameSave::class, RecordSave::class], version = 7)
+@Database(entities = [GameSave::class, RecordSave::class], version = 8)
 abstract class AppDatabase : RoomDatabase() {
 	abstract fun gameSaveDao(): GameSaveDao
 	abstract fun recordSaveDao(): RecordSaveDao

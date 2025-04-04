@@ -80,7 +80,7 @@ fun MainScreen(navController: NavController) {
 			MenuButton(
 				onClick = {
 					gameState.resetGame()
-					navController.navigate(Screen.GameScreen.route)
+					navController.navigate(Screen.NewGameScreen.route)
 				},
 				text = "Новая игра",
 				icon = Icons.Default.Add,
@@ -89,6 +89,7 @@ fun MainScreen(navController: NavController) {
 
 			MenuButton(
 				onClick = {
+
 					navController.navigate(Screen.GameScreen.route)
 				},
 				text = "Продолжить игру",

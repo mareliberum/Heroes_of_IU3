@@ -21,6 +21,11 @@ class SharedViewModel : ViewModel() {
 		_name = newName
 	}
 
+	fun resetGameState(){
+		_gameState.value = GameState(10,10)
+		initializeField(gameState.value.gameField)
+	}
+
     init {
     	initializeField(gameState.value.gameField)
     }

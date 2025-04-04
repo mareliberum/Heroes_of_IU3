@@ -87,7 +87,7 @@ fun SaveListScreen(navController: NavController? = null) {
 	fun loadSaves(){
 		coroutineScope.launch(Dispatchers.IO) {
 			try {
-				saves = repository.getAll(context)
+				saves = repository.getByPlayerName(context, viewModel.name)
 				isLoading = false
 			} catch (e: Exception) {
 				error = e.message
@@ -256,9 +256,7 @@ fun SaveItemCard(
 					overflow = TextOverflow.Ellipsis
 				)
 				Text(
-					text = "",
-//					SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.UK)
-//						.format(Date(save.timestamp)),
+					text = save.player,
 					style = MaterialTheme.typography.bodySmall,
 					color = MaterialTheme.colorScheme.onSurfaceVariant
 				)

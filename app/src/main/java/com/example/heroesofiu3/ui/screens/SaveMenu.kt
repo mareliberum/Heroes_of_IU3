@@ -27,10 +27,8 @@ import kotlinx.coroutines.withContext
 fun SaveMenu(navController: NavController) {
 	val viewModel = LocalSharedViewModel.current
 	val repository = LocalGameSavesRepository.current
-
 	val gameState by viewModel.gameState.collectAsState()
 	val gameField = gameState.gameField
-
 	val context = LocalContext.current
 	val coroutineScope = rememberCoroutineScope()
 
@@ -40,11 +38,16 @@ fun SaveMenu(navController: NavController) {
 			.fillMaxWidth()
 			.padding(top = 32.dp, start = 14.dp, end = 14.dp, bottom = 8.dp)
 	) {
-
 		Button(
 			onClick = {
 				coroutineScope.launch(Dispatchers.IO) {
-					repository.saveGame(context, gameField, getCurrentDateTime(), gameState.score)
+					repository.saveGame(
+						context = context,
+						gameField = gameField,
+						saveName = getCurrentDateTime(),
+						score = gameState.score,
+						player = viewModel.name
+					)
 				}
 			},
 			modifier = Modifier
@@ -60,11 +63,10 @@ fun SaveMenu(navController: NavController) {
 					// При обновлении запускает Launched Effect на обновление экрана
 					gameState.loadedGameField = repository.loadGame(context, 1)
 					gameState.setScore(repository.getScore(context, 1) ?: 0)
-					withContext(Dispatchers.Main){
+					withContext(Dispatchers.Main) {
 						navController.popBackStack()
 					}
 				}
-
 			},
 			modifier = Modifier
 				.fillMaxWidth()

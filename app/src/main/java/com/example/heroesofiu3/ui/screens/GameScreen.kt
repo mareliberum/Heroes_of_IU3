@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -94,15 +94,17 @@ fun GameScreen(navController: NavHostController) {
             IconButton(onClick = {navController.navigate(Screen.SaveMenu.route)}
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Menu,
+                    imageVector = Icons.Default.Menu,
                     contentDescription = "Saves",
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                "score: $score"
+                text = "score: $score",
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -190,6 +192,8 @@ fun GameScreen(navController: NavHostController) {
         )
 
     }
+
+
 }
 
 
