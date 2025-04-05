@@ -139,7 +139,7 @@ fun GameScreen(navController: NavHostController) {
         //  Вызов меню покупки зданий
         val selectedCastle = selectedCell?.castle
         if (selectedCastle != null && selectedCastle.isPlayer) {
-            BuildMenu(selectedCell)
+            BuildMenu(selectedCell, navController)
         }
 
         // кнопочки концца хода и в главное меню не показываем при отображении меню построек замка, чтобе не перегружать экран

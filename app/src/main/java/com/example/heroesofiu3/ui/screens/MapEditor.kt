@@ -160,7 +160,6 @@ fun EditorToolbar(
 				}
 			}
 		}
-
 		// Выбор типа замка
 		Column(
 			verticalArrangement = Arrangement.spacedBy(4.dp)

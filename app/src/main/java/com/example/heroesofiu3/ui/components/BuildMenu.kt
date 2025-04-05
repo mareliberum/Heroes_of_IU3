@@ -5,12 +5,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavHostController
+import com.example.heroesofiu3.Screen
 import com.example.heroesofiu3.domain.entities.buildings.Barracks
 import com.example.heroesofiu3.domain.entities.buildings.Fort
 import com.example.heroesofiu3.domain.entities.buildings.Stable
@@ -18,7 +23,7 @@ import com.example.heroesofiu3.domain.entities.buildings.Tavern
 import com.example.heroesofiu3.domain.entities.gameField.Cell
 
 @Composable
-fun BuildMenu(selectedCell: Cell) {
+fun BuildMenu(selectedCell: Cell, navController: NavHostController) {
     val castle = selectedCell.castle!!
 
     val buildingList = listOf(
@@ -51,7 +56,23 @@ fun BuildMenu(selectedCell: Cell) {
             }
         }
         UsableBuildings(selectedCell)
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            onClick = { navController.navigate(Screen.DiceGameScreen.route) }
+        ) {
 
+            Icon(
+                imageVector = Icons.Default.Casino,
+                contentDescription = "dices",
+            )
+
+            Text(
+                "Играть в кости",
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
