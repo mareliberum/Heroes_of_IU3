@@ -38,6 +38,17 @@ class GameField(val width: Int, val height: Int) {
         return cellList
     }
 
+    fun findPlayerCastle(): Cell? {
+        for (row in cells) {
+            for (cell in row) {
+                if (cell.castle?.isPlayer == true) {
+                    return cell
+                }
+            }
+        }
+        return null
+    }
+
     fun reset() {
         standartMap()
         initializeField(this)

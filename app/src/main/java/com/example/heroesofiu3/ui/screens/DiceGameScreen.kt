@@ -1,6 +1,5 @@
 package com.example.heroesofiu3.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,25 +29,39 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.heroesofiu3.R
+import com.example.heroesofiu3.LocalSharedViewModel
 import com.example.heroesofiu3.domain.viewModels.DiceGameViewModel
 
 @Composable
 fun DiceGameScreen(navController: NavController) {
     // Получаем viewModel
-    val viewModel: DiceGameViewModel = viewModel(factory = DiceGameViewModel.Factory)
+//    val viewModel: DiceGameViewModel = viewModel(factory = DiceGameViewModel.Factory)
+
+    val sharedViewModel = LocalSharedViewModel.current
+    val gameState = sharedViewModel.gameState.collectAsState()
+    val playerCastle = gameState.value.gameField.findPlayerCastle()?.castle
+    val playerGold = playerCastle?.gold ?: 100 // Получаем золото игрока из замка или используем значение по умолчанию
+
+    // Получаем viewModel с начальным количеством золота
+    val viewModel: DiceGameViewModel = viewModel(
+        factory = DiceGameViewModel.createFactory(playerGold)
+    )
+
+    // Обновляем золото в замке при изменении золота в игре
+    LaunchedEffect(viewModel.playerGold) {
+        playerCastle?.setGold(viewModel.playerGold)
+    }
 
     // Настраиваем эффект для управления жизненным циклом детектора тряски
     DisposableEffect(key1 = viewModel) {
