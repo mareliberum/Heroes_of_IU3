@@ -44,7 +44,7 @@ fun SaveMenu(navController: NavController) {
 					repository.saveGame(
 						context = context,
 						gameField = gameField,
-						saveName = getCurrentDateTime(),
+						name = getCurrentDateTime(),
 						score = gameState.score,
 						player = viewModel.name
 					)
