@@ -35,7 +35,7 @@ class SavesTest {
 		val gameField = gameState.gameField
 		val repository = GameSavesDbRepository(context)
 		runBlocking {
-			repository.saveGame(context,gameField,"save", 0)
+			repository.saveGame(context,gameField,"save", 0, player = "testPlayer")
 			val loadedGame = repository.loadGame(context,0)
 			assertNotNull(loadedGame)
 		}

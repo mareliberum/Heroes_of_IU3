@@ -14,6 +14,9 @@ interface GameSaveDao {
 	@Query("SELECT * FROM GameSave ORDER BY id DESC")
 	suspend fun getAll(): List<GameSave> // Получить все сохранения
 
+	@Query("SELECT * FROM GameSave WHERE player = :player")
+	suspend fun getByPlayerName(player : String): List<GameSave> // Получить все сохранения
+
 	@Query("SELECT * FROM GameSave WHERE id = :id")
 	suspend fun getById(id: Int): GameSave? // Получить сохранение по ID
 

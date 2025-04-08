@@ -1,7 +1,6 @@
 package com.example.heroesofiu3.presentation
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -149,7 +148,7 @@ class GameState(width: Int, height: Int) {
 
             } else {
                 // Если атаковать некого, двигаемся в сторону замка игрока
-                Log.d("Log","move tvds castle")
+
                 moveTowardsPlayerCastle(botCell, context)
             }
         }
@@ -405,10 +404,9 @@ class GameState(width: Int, height: Int) {
         val castle = castleCell.castle ?: return
         val attacker = unitCell.unit ?: return
         if (attacker.hasAttacked) return
-        Log.d("Log", "attack casle")
+
         // Если форта нет или если замок игрока и там нет героя - просто идем в замок
         if (!castle.buildings.any { it is Fort } || (castle.isPlayer && castleCell.unit !is Hero)) {
-            Log.e("Log", "Siege can't be started - no hero or fort in castle")
             moveUnit(unitCell, castleCell, unitCell.unit?.maxDistance ?: 0)
             return
         }
@@ -454,7 +452,7 @@ class GameState(width: Int, height: Int) {
                     ).show()
                 }catch (_ : Exception) {}
             }
-            Log.i("Log", "Castle has taken damage. Health = ${castle.health}")
+
         }
         if (castle.health <= 0) {
             moveUnit(unitCell, castleCell, attacker.maxDistance)
@@ -463,7 +461,7 @@ class GameState(width: Int, height: Int) {
     }
 
     private fun startSiege(castleCell: Cell) {
-        Log.w("Log", "Siege started")
+
         val castle = castleCell.castle ?: return
         castle.isUnderSiege = true
 
@@ -476,7 +474,7 @@ class GameState(width: Int, height: Int) {
     }
 
     private fun endSiege(castleCell: Cell) {
-        Log.w("Log", "Siege ended")
+
         val castle = castleCell.castle ?: return
         castle.isUnderSiege = false
 

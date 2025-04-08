@@ -10,4 +10,5 @@ data class GameSave(
 	val name: String, // Имя сохранения
 	val gameFieldJson: String, // JSON-строка GameField
 	val score : Int,  //очки
+	val player : String,
 )

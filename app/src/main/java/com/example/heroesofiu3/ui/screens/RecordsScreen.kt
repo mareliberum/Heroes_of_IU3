@@ -14,13 +14,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,10 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.heroesofiu3.LocalRecordsSavesRepository
 import com.example.heroesofiu3.data.DataEntities.RecordSave
 import kotlinx.coroutines.Dispatchers
@@ -44,17 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecordsScreen(navController: NavController) {
 	val repository = LocalRecordsSavesRepository.current
-	// Mock данные для рекордов (замените на реальные из вашего репозитория)
-//	val records = remember {
-//		listOf(
-//			Record("Игрок 1", 150, "12.05.2023"),
-//			Record("Вы", 200, "15.05.2023"),
-//			Record("Игрок 2", 100, "10.05.2023"),
-//			Record("Игрок 3", 180, "11.05.2023"),
-//			Record("Игрок 4", 90, "09.05.2023"),
-//			Record("Игрок 5", 210, "16.05.2023"),
-//		)
-//	}
+
 	var records by remember { mutableStateOf<List<RecordSave>>(emptyList()) }
 
 	var sortBy by remember { mutableStateOf(SortBy.SCORE) }
@@ -96,7 +84,8 @@ fun RecordsScreen(navController: NavController) {
 			Spacer(modifier = Modifier.width(8.dp))
 			Text(
 				text = "Таблица рекордов",
-				style = MaterialTheme.typography.headlineSmall
+				style = MaterialTheme.typography.headlineSmall,
+				color = MaterialTheme.colorScheme.primary
 			)
 		}
 
@@ -128,7 +117,6 @@ fun RecordsScreen(navController: NavController) {
 					SortBy.SCORE -> records.sortedByDescending { it.score }
 					SortBy.DATE -> records.sortedByDescending { it.date }
 				},
-//				key = { it.name + it.score + getCurrentDateTime() }
 			) { record ->
 				RecordItem(
 					record = record,
@@ -136,9 +124,8 @@ fun RecordsScreen(navController: NavController) {
 				)
 			}
 		}
-
-		// Кнопка назад
-		Button(
+		// кнопка назад
+		OutlinedButton(
 			onClick = { navController.popBackStack() },
 			modifier = Modifier.fillMaxWidth(),
 		) {
@@ -201,20 +188,7 @@ fun SortChip(text: String, selected: Boolean, onClick: () -> Unit) {
 	)
 }
 
-data class Record(
-	val playerName: String,
-	val score: Int,
-	val date: String
-)
 
 enum class SortBy {
 	SCORE, DATE
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun RecordsScreenPreview() {
-	MaterialTheme {
-		RecordsScreen(rememberNavController())
-	}
 }

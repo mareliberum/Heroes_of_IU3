@@ -44,6 +44,10 @@ class Castle(
         _gold += amount
     }
 
+    fun setGold(amount: Int){
+        _gold = amount
+    }
+
     override fun toString(): String {
         return "[Castle $name], gold: $gold, health: $health"
     }
