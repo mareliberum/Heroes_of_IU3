@@ -21,8 +21,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.heroesofiu3.data.GameSavesDbRepository
 import com.example.heroesofiu3.data.RecordsDbRepository
 import com.example.heroesofiu3.domain.viewModels.SharedViewModel
+import com.example.heroesofiu3.ui.screens.DiceGameScreen
 import com.example.heroesofiu3.ui.screens.GameScreen
 import com.example.heroesofiu3.ui.screens.MainScreen
+import com.example.heroesofiu3.ui.screens.MapEditorScreen
 import com.example.heroesofiu3.ui.screens.PlayerScreen
 import com.example.heroesofiu3.ui.screens.RecordsScreen
 import com.example.heroesofiu3.ui.screens.SaveListScreen
@@ -92,10 +94,10 @@ fun App() {
                     MainScreen(navController)
                 }
 
-                // Экран новой игры  (пока нет) TODO : Сделать newGameScreen
-//                composable(Screen.NewGameScreen.route) {
-//                    NewGameScreen(navController)
-//                }
+                // Экран новой игры  (пока нет) TODO : Сделать newGameScreen(map editor)
+                composable(Screen.NewGameScreen.route) {
+                    MapEditorScreen(navController)
+                }
 
                 // Экран экрана сохранений внутри игры
                 composable(Screen.SaveMenu.route) {
@@ -115,6 +117,9 @@ fun App() {
                 composable(Screen.PlayerScreen.route){
                     PlayerScreen(navController)
                 }
+                composable(Screen.DiceGameScreen.route){
+                    DiceGameScreen(navController)
+                }
 
             }
 
@@ -127,10 +132,11 @@ sealed class Screen(val route: String) {
     data object MainScreen : Screen("main")
     data object NewGameScreen : Screen("new_game")
     data object SaveMenu : Screen("save_menu")
-    data object GameScreen : Screen("game/{gameFieldJson}")
+    data object GameScreen : Screen("game_screen")
     data object SaveListScreen : Screen("save_list")
     data object RecordsScreen : Screen("records")
     data object PlayerScreen : Screen("player")
+    data object DiceGameScreen : Screen("dice_game")
 
 
 }

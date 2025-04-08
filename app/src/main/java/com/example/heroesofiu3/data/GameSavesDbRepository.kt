@@ -5,23 +5,32 @@ import com.example.heroesofiu3.data.DataEntities.GameSave
 import com.example.heroesofiu3.data.room.AppDatabase
 import com.example.heroesofiu3.domain.entities.gameField.GameField
 
-class GameSavesDbRepository(context: Context) {
+interface IGameSavesRepository {
+	suspend fun saveGame(context: Context, gameField: GameField, name: String, id: Int, player: String)
+	suspend fun loadGame(context: Context, id: Int): GameField?
+	suspend fun getSavesCount(context: Context): Int
+	suspend fun getByPlayerName(context: Context, playerName: String): List<GameSave>
+	suspend fun deleteById(context: Context, id: Int)
+}
 
-	suspend fun saveGame(context: Context, gameField: GameField, saveName: String, score : Int) {
+class GameSavesDbRepository(private val context: Context) : IGameSavesRepository {
+
+	override suspend fun saveGame(context: Context, gameField: GameField, name: String, score: Int, player: String) {
 		val db = AppDatabase.getDatabase(context)
 		val gameSave = GameSave(
 			id = 0,
-			name = saveName,
+			name = name,
 			gameFieldJson = gameField.toJson(),
-			score = score
+			score = score,
+			player = player,
 		)
 		println("saved $gameSave")
 		db.gameSaveDao().insert(gameSave)
 	}
 
-	suspend fun loadGame(context: Context, saveId: Int): GameField? {
+	override suspend fun loadGame(context: Context, id: Int): GameField? {
 		val db = AppDatabase.getDatabase(context)
-		val gameSave = db.gameSaveDao().getById(saveId)
+		val gameSave = db.gameSaveDao().getById(id)
 		gameSave?.score
 		return gameSave?.gameFieldJson?.toGameField()
 	}
@@ -37,17 +46,22 @@ class GameSavesDbRepository(context: Context) {
 		db.gameSaveDao().deleteAll()
 	}
 
-	suspend fun getSavesCount(context: Context): Int {
+	override suspend fun getSavesCount(context: Context): Int {
 		val db = AppDatabase.getDatabase(context)
 		return db.gameSaveDao().getCount()
-
 	}
+
 	suspend fun getAll(context: Context): List<GameSave> {
 		val db = AppDatabase.getDatabase(context)
 		return db.gameSaveDao().getAll()
 	}
 
-	suspend fun deleteById(context: Context, id: Int){
+	override suspend fun getByPlayerName(context: Context, playerName: String): List<GameSave> {
+		val db = AppDatabase.getDatabase(context)
+		return db.gameSaveDao().getByPlayerName(playerName)
+	}
+
+	override suspend fun deleteById(context: Context, id: Int){
 		val db = AppDatabase.getDatabase(context)
 		db.gameSaveDao().deleteByID(id)
 	}

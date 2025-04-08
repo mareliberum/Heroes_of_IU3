@@ -16,6 +16,14 @@ class GameField(val width: Int, val height: Int) {
         }
     }
 
+    fun resetCellTypes(){
+        for (row in cells){
+            for (cell in row){
+                cell.terrain = Terrain.UNREACHABLE
+            }
+        }
+    }
+
     fun getCell(x: Int, y: Int): Cell? {
         return cells.getOrNull(x)?.getOrNull(y)
     }
@@ -30,7 +38,23 @@ class GameField(val width: Int, val height: Int) {
         return cellList
     }
 
+    fun findPlayerCastle(): Cell? {
+        for (row in cells) {
+            for (cell in row) {
+                if (cell.castle?.isPlayer == true) {
+                    return cell
+                }
+            }
+        }
+        return null
+    }
+
     fun reset() {
+        standartMap()
+        initializeField(this)
+    }
+
+    fun standartMap(){
         for (row in cells) {
             for (cell in row) {
                 cell.unit = null
@@ -43,6 +67,5 @@ class GameField(val width: Int, val height: Int) {
                 else Terrain.OBSTACLE
             }
         }
-        initializeField(this)
     }
 }

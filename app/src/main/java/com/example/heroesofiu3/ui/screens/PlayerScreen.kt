@@ -94,6 +94,8 @@ fun PlayerScreen(navController: NavHostController) {
 			onClick = {
 				if (playerName.isNotBlank()) {
 					viewModel.setName(playerName.trim())
+					// сбросим текущую игру для нового игрока
+					viewModel.resetGameState()
 					navController.popBackStack()
 				} else {
 					isError = true
