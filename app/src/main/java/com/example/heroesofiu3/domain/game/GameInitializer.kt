@@ -14,8 +14,6 @@ fun initializeField(field: GameField) {
     field.getCell(1, 0)?.unit = Hero("Hero", true)
     field.getCell(2, 1)?.unit = Knight("Knight", true)
     field.getCell(0, 0)?.unit = Archer("Archer", true)
-    field.getCell(8, 1)?.unit = Knight("Mega Knight", true, health = 1000, strength = 1000, maxDistance = 100)
-    field.getCell(7, 1)?.unit = Knight("Fast Knight", true, health = 1000, maxDistance = 100)
     field.getCell(1, 1)?.castle = Castle("Blue", true)
     field.getCell(1, 1)?.castle!!.addGold(500)
 
