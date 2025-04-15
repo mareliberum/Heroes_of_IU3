@@ -1,3 +1,10 @@
+![Screenshot_2025_04_15_20_22_22_80_ba1f1b70e599dfaa65f3250cba3786aa](https://github.com/user-attachments/assets/7dd14638-b13f-486f-ac46-e25ac5a0f423)
+![Screenshot_2025_04_15_20_24_07_28_ba1f1b70e599dfaa65f3250cba3786aa](https://github.com/user-attachments/assets/634dff24-e31f-4d51-b2a0-f5a4f19104dc)
+![Screenshot_2025_04_15_20_24_33_88_ba1f1b70e599dfaa65f3250cba3786aa](https://github.com/user-attachments/assets/053248c3-c379-4d38-81c5-e91b693271ea)
+![Screenshot_2025_04_15_20_24_15_81_ba1f1b70e599dfaa65f3250cba3786aa](https://github.com/user-attachments/assets/a98a8b52-70d5-4913-820e-593379bf7938)
+
+
+
 # Heroes of IU3
 
 Пошаговая стратегическая игра, разработанная в рамках университетской лабораторной работы. Игра представляет собой поле с сеткой, где игроки управляют героями и зданиями для победы над противниками.
