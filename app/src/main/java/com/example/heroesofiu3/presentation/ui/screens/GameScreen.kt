@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.screens
+package com.example.heroesofiu3.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,11 +36,12 @@ import androidx.navigation.NavHostController
 import com.example.heroesofiu3.LocalRecordsSavesRepository
 import com.example.heroesofiu3.LocalSharedViewModel
 import com.example.heroesofiu3.Screen
+import com.example.heroesofiu3.domain.entities.GameClock
 import com.example.heroesofiu3.domain.entities.gameField.Cell
 import com.example.heroesofiu3.domain.game.initializeField
-import com.example.heroesofiu3.ui.components.BuildMenu
-import com.example.heroesofiu3.ui.components.CellInfo
-import com.example.heroesofiu3.ui.components.CellView
+import com.example.heroesofiu3.presentation.ui.components.BuildMenu
+import com.example.heroesofiu3.presentation.ui.components.CellInfo
+import com.example.heroesofiu3.presentation.ui.components.CellView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -57,12 +58,16 @@ fun GameScreen(navController: NavHostController) {
     val availableMoves by gameState.availableMoves.collectAsState()
     val isGameOver = gameState.isGameOver
     val score = gameState.score
-
     val loadedGameField = gameState.loadedGameField
 
     // Состояние для отображения GameOverScreen
     var showGameOverScreen by remember { mutableStateOf(false) }
 
+    val time by GameClock.gameTime.collectAsState()
+
+    LaunchedEffect(Unit) {
+        GameClock.start()
+    }
 
     LaunchedEffect(isGameOver) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -103,9 +108,15 @@ fun GameScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
+                text = time.toString(),
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
                 text = "score: $score",
                 color = MaterialTheme.colorScheme.primary
             )
+
         }
 
         LazyVerticalGrid(
@@ -174,10 +185,6 @@ fun GameScreen(navController: NavHostController) {
 
             }
         }
-
-
-
-
     }
 
     if (showGameOverScreen) {

@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.domain.viewModels
+package com.example.heroesofiu3.presentation.viewModels
 
 import android.content.Context
 import android.os.Handler

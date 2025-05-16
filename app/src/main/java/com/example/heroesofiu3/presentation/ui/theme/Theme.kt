@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.theme
+package com.example.heroesofiu3.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

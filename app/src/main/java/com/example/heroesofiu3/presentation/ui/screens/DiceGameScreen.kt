@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.screens
+package com.example.heroesofiu3.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.heroesofiu3.LocalSharedViewModel
-import com.example.heroesofiu3.domain.viewModels.DiceGameViewModel
+import com.example.heroesofiu3.presentation.viewModels.DiceGameViewModel
 
 @Composable
 fun DiceGameScreen(navController: NavController) {

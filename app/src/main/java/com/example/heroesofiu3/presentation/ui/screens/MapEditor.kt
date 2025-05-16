@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.screens
+package com.example.heroesofiu3.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,8 +38,8 @@ import com.example.heroesofiu3.Screen
 import com.example.heroesofiu3.domain.entities.buildings.Castle
 import com.example.heroesofiu3.domain.entities.gameField.Terrain
 import com.example.heroesofiu3.domain.game.initializeField
-import com.example.heroesofiu3.domain.viewModels.MapEditorViewModel
-import com.example.heroesofiu3.ui.components.CellView
+import com.example.heroesofiu3.presentation.viewModels.MapEditorViewModel
+import com.example.heroesofiu3.presentation.ui.components.CellView
 
 @Composable
 fun MapEditorScreen(navController: NavHostController) {

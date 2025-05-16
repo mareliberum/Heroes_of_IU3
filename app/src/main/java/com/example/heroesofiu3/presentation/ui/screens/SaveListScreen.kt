@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.screens
+package com.example.heroesofiu3.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

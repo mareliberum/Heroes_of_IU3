@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.ui.components
+package com.example.heroesofiu3.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

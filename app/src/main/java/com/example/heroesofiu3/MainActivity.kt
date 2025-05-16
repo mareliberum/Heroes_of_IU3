@@ -20,16 +20,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.heroesofiu3.data.GameSavesDbRepository
 import com.example.heroesofiu3.data.RecordsDbRepository
-import com.example.heroesofiu3.domain.viewModels.SharedViewModel
-import com.example.heroesofiu3.ui.screens.DiceGameScreen
-import com.example.heroesofiu3.ui.screens.GameScreen
-import com.example.heroesofiu3.ui.screens.MainScreen
-import com.example.heroesofiu3.ui.screens.MapEditorScreen
-import com.example.heroesofiu3.ui.screens.PlayerScreen
-import com.example.heroesofiu3.ui.screens.RecordsScreen
-import com.example.heroesofiu3.ui.screens.SaveListScreen
-import com.example.heroesofiu3.ui.screens.SaveMenu
-import com.example.heroesofiu3.ui.theme.HeroesOfIU3Theme
+import com.example.heroesofiu3.presentation.ui.screens.DiceGameScreen
+import com.example.heroesofiu3.presentation.ui.screens.GameScreen
+import com.example.heroesofiu3.presentation.ui.screens.MainScreen
+import com.example.heroesofiu3.presentation.ui.screens.MapEditorScreen
+import com.example.heroesofiu3.presentation.ui.screens.PlayerScreen
+import com.example.heroesofiu3.presentation.ui.screens.RecordsScreen
+import com.example.heroesofiu3.presentation.ui.screens.SaveListScreen
+import com.example.heroesofiu3.presentation.ui.screens.SaveMenu
+import com.example.heroesofiu3.presentation.ui.theme.HeroesOfIU3Theme
+import com.example.heroesofiu3.presentation.viewModels.SharedViewModel
 
 val LocalGameSavesRepository = staticCompositionLocalOf<GameSavesDbRepository> {
     error("GameSavesDbRepository not provided!")

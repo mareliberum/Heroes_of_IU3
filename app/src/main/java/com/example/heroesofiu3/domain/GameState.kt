@@ -1,4 +1,4 @@
-package com.example.heroesofiu3.presentation
+package com.example.heroesofiu3.domain
 
 import android.content.Context
 import android.widget.Toast
